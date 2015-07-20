@@ -1,0 +1,40 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E30D0028"
+    android:padding="24dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+        <ImageButton
+            android:id="@+id/btn_dialog_close"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="right"
+            android:background="@null"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_close" />
+
+        <Button
+            android:id="@+id/btn_completed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
+            android:layout_marginTop="32dp"
+            android:drawablePadding="16dp"
+            android:drawableTop="@drawable/ic_check"
+            android:fontFamily="sans-serif-light"
+            android:gravity="center"
+            android:background="@null"
+            android:text="Mark Completed"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:textSize="24sp" />
+    </LinearLayout>
+
+</FrameLayout>
