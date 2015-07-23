@@ -22,8 +22,11 @@ public class DialogActions extends DialogFragment implements View.OnClickListene
     private Button mBtnMarkCompleted;
     private ImageButton mBtnClose;
     private Actions mListener;
-    private Activity parent;
+    private Activity mContext;
 
+    /**
+     * @return the id of the item clicking which this Dialog was launched
+     */
     private long getDropId() {
         return mArguments.getLong(Actions.DROP_POSITION);
     }
@@ -38,7 +41,7 @@ public class DialogActions extends DialogFragment implements View.OnClickListene
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        parent = activity;
+        mContext = activity;
     }
 
     @Nullable
@@ -60,7 +63,7 @@ public class DialogActions extends DialogFragment implements View.OnClickListene
         mBtnClose = (ImageButton) view.findViewById(R.id.btn_dialog_close);
         mBtnMarkCompleted.setOnClickListener(this);
         mBtnClose.setOnClickListener(this);
-        mTextCompleted.setTypeface(Util.loadRalewayRegular(parent));
+        mTextCompleted.setTypeface(Util.loadRalewayRegular(mContext));
     }
 
 
@@ -76,6 +79,7 @@ public class DialogActions extends DialogFragment implements View.OnClickListene
 
     private void completeAction() {
         if (mListener == null) return;
+        //When the user marks an item as complete, get the item's id and notify the interested listeners so that they can further process this event
         mListener.onClickComplete(getDropId());
     }
 

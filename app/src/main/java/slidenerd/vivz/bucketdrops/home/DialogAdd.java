@@ -33,11 +33,17 @@ import slidenerd.vivz.bucketdrops.extras.Util;
 public class DialogAdd extends DialogFragment implements View.OnClickListener, TextView.OnEditorActionListener {
 
     private Activity mContext;
+    //Title of the dialog
     private TextView mTextTitle;
+    //The close button for this dialog
     private ImageButton mBtnClose;
+    //The area where the user can type his/her goal
     private EditText mInputWhat;
+    //The control with which user can select the date for his/her goal by which they feel they wanna accomplish their goal
     private DatePicker mInputWhen;
+    //The button clicking which the goal and date will be added to the database
     private Button mBtnAddDrop;
+    //The object which will be notified when the user hits the "Add Drop" button
     private OnAddDropListener mOnAddDropListener;
 
     public void setAddDropListener(OnAddDropListener OnAddDropListener) {
@@ -66,12 +72,16 @@ public class DialogAdd extends DialogFragment implements View.OnClickListener, T
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        //init UI elements except the date picker
         initViews(view);
+        //init the date picker
         initDatePicker(view);
+        //monitor the user clicking buttons such as DONE on the virtual keyboard
         mInputWhat.setOnEditorActionListener(this);
         mBtnClose.setOnClickListener(this);
         mBtnAddDrop.setOnClickListener(this);
 
+        //load custom fonts wherever appropriate
         initCustomFont();
     }
 
@@ -109,6 +119,7 @@ public class DialogAdd extends DialogFragment implements View.OnClickListener, T
 
     private void addAction() {
         if (mOnAddDropListener != null) {
+            //Load the taskname, convert the user entered date to a specific value of 0 hours 0 minutes and 0 seconds, 12 am precisely on the day they want things to be done
             String taskName = mInputWhat.getText().toString();
             int dayOfMonth = mInputWhen.getDayOfMonth();
             int month = mInputWhen.getMonth();
@@ -129,6 +140,7 @@ public class DialogAdd extends DialogFragment implements View.OnClickListener, T
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         if (actionId == EditorInfo.IME_ACTION_DONE) {
+            //Hide the keyboard when the user presses done on it
             mInputWhen.requestFocus();
             InputMethodManager imm = (InputMethodManager) mContext.getSystemService(
                     Context.INPUT_METHOD_SERVICE);

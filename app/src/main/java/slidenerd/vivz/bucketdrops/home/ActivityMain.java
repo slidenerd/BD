@@ -11,7 +11,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -50,15 +49,18 @@ public class ActivityMain extends AppCompatActivity implements
         DialogActions.Actions {
 
     private static final int LOADER_ID = 100;
-    private static final int SERVICE_REQUEST_CODE = 201;
-    private BucketRecyclerView mRecyclerTodos;
+    //The RecyclerView that displays all our items
+    private BucketRecyclerView mRecyclerDrops;
     private Button mBtnAddDrop;
+    //The View to be displayed when the RecyclerView is empty.
     private View mEmptyTodos;
     private Toolbar mToolbar;
     private ConcreteAdapter mAdapter;
     private ImageView mImgBackground;
     private Database mDatabase;
+    //The default sort option that involves displaying items in the order in which they were added by the user
     private int sortOption = SORT_DEFAULT;
+    //When the add drop button is clicked, show a dialog that lets the person add a new drop
     private View.OnClickListener mOnClickAddDropListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -81,18 +83,26 @@ public class ActivityMain extends AppCompatActivity implements
         initToolbar();
         initRecycler();
         if (savedInstanceState != null) {
+
+            //retrieve the sort option selected by the user prior to rotating their screen
             sortOption = savedInstanceState.getInt(KEY_SORT_OPTION);
-            Util.notifyUpcomingDrops(this);
         } else {
+            //if its the first time, this Activity is running, launch the Notification Service.
             Util.notifyUpcomingDrops(this);
         }
+        //Start a Loader to load the data using the sort option specified by the user
         startLoader(sortOption, false);
 
 
     }
 
+    /**
+     * @param currentSortOption Sorting option by means of which its decided how the data is displayed in the Cursor
+     * @param restart           indicates whether a new loader should be created or an existing one should be restarted
+     */
     private void startLoader(int currentSortOption, boolean restart) {
         Bundle arguments = new Bundle();
+        //Update the sort option to include what the user wants currently
         sortOption = currentSortOption;
         switch (sortOption) {
             case SORT_ASCENDING_DATE:
@@ -112,8 +122,10 @@ public class ActivityMain extends AppCompatActivity implements
                 break;
         }
         if (!restart) {
+            //Create a new loader
             getSupportLoaderManager().initLoader(LOADER_ID, arguments, this);
         } else {
+            //Restart an existing loader
             getSupportLoaderManager().restartLoader(LOADER_ID, arguments, this);
         }
     }
@@ -128,22 +140,29 @@ public class ActivityMain extends AppCompatActivity implements
         mBtnAddDrop = (Button) mEmptyTodos.findViewById(R.id.btn_add_drop);
         mBtnAddDrop.setOnClickListener(mOnClickAddDropListener);
         mAdapter = new ConcreteAdapter(this);
+        //let our Activity handle the event when the user swipes an item from our RecyclerView
         mAdapter.setOnSwipeListener(this);
+        //Let our Activity handle the event when the footer is clicked from our RecyclerView
         mAdapter.setOnFooterClickListener(this);
+        //Let our Activity handle the event when the Add Drop button is clicked from the empty view
         mAdapter.setDropClickListener(this);
-        mRecyclerTodos = (BucketRecyclerView) findViewById(R.id.recycler_tasks);
-        mRecyclerTodos.setEmptyView(mEmptyTodos);
-        mRecyclerTodos.addItemDecoration(new Divider(this, LinearLayoutManager.VERTICAL));
-        mRecyclerTodos.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerTodos.setItemAnimator(new DefaultItemAnimator());
-        mRecyclerTodos.setAdapter(mAdapter);
+        mRecyclerDrops = (BucketRecyclerView) findViewById(R.id.recycler_tasks);
+        //Set an Empty View to be displayed when the RecyclerView has no items
+        mRecyclerDrops.setEmptyView(mEmptyTodos);
+        //Add a divider to our RecyclerView
+        mRecyclerDrops.addItemDecoration(new Divider(this, LinearLayoutManager.VERTICAL));
+        mRecyclerDrops.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerDrops.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerDrops.setAdapter(mAdapter);
+        //Handler the swipe from our RecyclerView
         ItemTouchHelper.Callback callback =
                 new SimpleItemTouchHelperCallback(mAdapter);
         ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
-        touchHelper.attachToRecyclerView(mRecyclerTodos);
+        touchHelper.attachToRecyclerView(mRecyclerDrops);
     }
 
     private void initBackgroundImage() {
+        //Convert our background image to a specific size that suits our device's screen size
         mImgBackground = (ImageView) findViewById(R.id.img_background);
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         Bitmap bitmapModified = Util.getScaledVersion(this, displayMetrics.widthPixels, displayMetrics.heightPixels);
@@ -166,6 +185,7 @@ public class ActivityMain extends AppCompatActivity implements
         if (id == R.id.action_add) {
             showDialogAdd();
         }
+        //Restart the loader in all cases when the user changes the sorting option
         if (id == R.id.action_show_completed) {
             startLoader(SHOW_COMPLETE, true);
         }
@@ -190,12 +210,14 @@ public class ActivityMain extends AppCompatActivity implements
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        //Specify the sorting option chosen by the user and initialize the BucketLoader
         BucketLoader bucketLoader = new BucketLoader(this, args, mDatabase);
         return bucketLoader;
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        //A special case to be handled for showing complete and incomplete items. If there are no complete items or incomplete items, instead of showing an empty RecyclerView , simply display a Toast message and show all the items in the default sort order
         if (sortOption == SHOW_COMPLETE && data.getCount() == 0) {
             Toast.makeText(this, "Patience My Friend, Nothing Is Complete", Toast.LENGTH_SHORT).show();
             startLoader(SORT_DEFAULT, true);
@@ -215,6 +237,7 @@ public class ActivityMain extends AppCompatActivity implements
 
     @Override
     public void onClickAddDrop(Drop drop) {
+        //Add the drop to our database and restart the loader
         mDatabase.insert(drop);
         startLoader(sortOption, true);
     }
@@ -226,6 +249,7 @@ public class ActivityMain extends AppCompatActivity implements
 
     @Override
     public void onSwipeItem(long todoId) {
+        //Delete the drop from our database and restart the loader
         mDatabase.delete(todoId);
         startLoader(sortOption, true);
     }
@@ -237,6 +261,7 @@ public class ActivityMain extends AppCompatActivity implements
 
     @Override
     public void onClickDrop(long dropId) {
+        //Launch the DialogActions which are shown when the user clicks on some item from our RecyclerView
         Bundle arguments = new Bundle();
         arguments.putLong(DialogActions.Actions.DROP_POSITION, dropId);
         DialogActions dialog = new DialogActions();
@@ -247,7 +272,7 @@ public class ActivityMain extends AppCompatActivity implements
 
     @Override
     public void onClickComplete(long dropId) {
-        Log.d("VIVZ", "onClickComplete " + dropId);
+        //Mark an item as complete in our database when the user clicks "Mark as Complete"
         mDatabase.markAsComplete(dropId);
     }
 }
