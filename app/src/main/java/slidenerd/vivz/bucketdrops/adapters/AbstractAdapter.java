@@ -189,12 +189,13 @@ public abstract class AbstractAdapter<VH extends RecyclerView.ViewHolder> extend
     @Override
     public void onSwipe(int position) {
         if (mDataValid && mCursor != null && mCursor.moveToPosition(position)) {
-            onSwipe(mCursor);
+            long itemId = getItemId(mCursor.getPosition());
+            onSwipe(itemId);
         }
     }
 
     /**
-     * @param cursor moved to a position at which the swipe occured and contains data that the user wants to display inside a RecyclerView.
+     * @param itemId of the item that was swiped inside the RecyclerView
      */
-    public abstract void onSwipe(Cursor cursor);
+    public abstract void onSwipe(long itemId);
 }

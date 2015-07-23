@@ -11,11 +11,17 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
         mItemTouchHelper = adapter;
     }
 
+    /**
+     * @return false if you dont want to enable drag else return true
+     */
     @Override
     public boolean isLongPressDragEnabled() {
         return false;
     }
 
+    /**
+     * @return true of you want to enable swipe in your RecyclerView else return false
+     */
     @Override
     public boolean isItemViewSwipeEnabled() {
         return true;
@@ -23,6 +29,7 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
 
     @Override
     public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+        //We want to let the person swipe to the right on devices that run LTR and let the person swipe from right to left on devices that run RTL
         int swipeFlags = ItemTouchHelper.END;
         return makeMovementFlags(0, swipeFlags);
     }
@@ -30,7 +37,7 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
     @Override
     public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
                           RecyclerView.ViewHolder target) {
-        return true;
+        return false;
     }
 
     @Override
