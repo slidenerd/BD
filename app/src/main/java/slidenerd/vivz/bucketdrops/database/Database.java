@@ -83,11 +83,14 @@ public class Database {
     }
 
     /**
-     * @return An ArrayList containing all the Drops retrieved in the order in which the user added them to the database
+     * @return An ArrayList containing all the Drops retrieved in the order in which the user added them to the database. Ensure that the list contains only those drops whose status is incomplete and whose target date is more than the current time now
      */
-    public ArrayList<Drop> getAllDrops() {
+    public ArrayList<Drop> getIncompleteDrops() {
+        long now = System.currentTimeMillis();
         String[] columns = new String[]{Helper.COL_WHAT, Helper.COL_ADDED, Helper.COL_WHEN, Helper.COL_STATUS};
         String orderBy = Helper.COL_WHEN + " ASC";
+        String selection = Helper.COL_WHEN + " >= ? AND " + Helper.COL_STATUS + " = ? ";
+        String[] selectionArgs = new String[]{String.valueOf(now), String.valueOf(0)};
         Cursor cursor = mDatabase.query(Helper.TABLE_NAME, columns, null, null, null, null, orderBy);
         ArrayList<Drop> listDrops = new ArrayList<>();
         while (cursor.moveToNext()) {

@@ -25,7 +25,6 @@ public class NotificationService extends IntentService {
 
     public NotificationService() {
         super("NotificationService");
-
     }
 
     @Override
@@ -42,34 +41,27 @@ public class NotificationService extends IntentService {
         //Get the difference between the dates
         //Get today's date, is today's date more than 90% of the time difference between 2 dates?
         //If yes fire a notification for such items, else do nothing
-        ArrayList<Drop> listDrops = mDatabase.getAllDrops();
+        ArrayList<Drop> listIncompleteDrops = mDatabase.getIncompleteDrops();
         long now = System.currentTimeMillis();
-        for (final Drop current : listDrops) {
+        for (final Drop current : listIncompleteDrops) {
 
-
-            if (!hasDropElapsed(current.when, now) && has90PercentTimeElapsed(current.added, current.when, now)) {
-                buildNotification(current);
+            //If the target date for the current drop is not already over and if 90% time has elapsed right now since the drop was added, then fire a notification for the same
+            if (has90PercentTimeElapsed(current.added, current.when, now)) {
+                fireNotification(current);
             }
         }
     }
 
     private boolean has90PercentTimeElapsed(long added, long when, long now) {
+        //total duration between target and added date
         long difference = when - added;
+        //90% of the total duration
         long ninetyPercentDifference = (long) (0.9 * difference);
-        if (now > (added + ninetyPercentDifference)) {
-            Log.d("VIVZ", "Time To Sound An Alarm");
-            return true;
-        } else {
-            Log.d("VIVZ", "Alls well because the difference  is " + difference + " with 90% at " + ninetyPercentDifference + " and now is " + now + " added " + added + " when " + when);
-            return false;
-        }
+        //if more than 90% time has elapsed since the drop was added, then return true else return false
+        return (now > (added + ninetyPercentDifference)) ? true : false;
     }
 
-    private boolean hasDropElapsed(long when, long now) {
-        return when < now ? true : false;
-    }
-
-    private void buildNotification(Drop drop) {
+    private void fireNotification(Drop drop) {
         PugNotification.with(this)
                 .load()
                 .title(drop.what)

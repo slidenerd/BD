@@ -6,10 +6,16 @@ import android.util.AttributeSet;
 import android.view.View;
 
 public class BucketRecyclerView extends RecyclerView {
+    /**
+     * The View to display when the RecyclerView has no items at all
+     */
     private View mEmptyView;
 
     private AdapterDataObserver mEmptyObserver = new AdapterDataObserver() {
 
+        /**
+         * Whenever this method is triggered, if the RecyclerView has some items to display, show it and hide the empty view otherwise do the reverse
+         */
         @Override
         public void onChanged() {
             Adapter<?> adapter = getAdapter();
@@ -43,6 +49,7 @@ public class BucketRecyclerView extends RecyclerView {
         super.setAdapter(adapter);
 
         if (adapter != null) {
+            //Register an AdapterDataSetObserver to monitor the number of items in the RecyclerView whenever items are being added, removed
             adapter.registerAdapterDataObserver(mEmptyObserver);
         }
         mEmptyObserver.onChanged();

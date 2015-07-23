@@ -10,15 +10,9 @@ import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.util.DisplayMetrics;
-import android.util.Log;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-
-import java.util.TimeZone;
 
 import slidenerd.vivz.bucketdrops.R;
 import slidenerd.vivz.bucketdrops.services.NotificationService;
@@ -27,7 +21,11 @@ import slidenerd.vivz.bucketdrops.services.NotificationService;
  * Created by vivz on 06/07/15.
  */
 public class Util {
+    /**
+     * @param context the Activity or Broadcast Receiver from which you will invoke this method
+     */
     public static void notifyUpcomingDrops(Context context) {
+        //Create an AlarmManager instance and schedule the NotificationService to run every 4 hours
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, NotificationService.class);
         PendingIntent pendingIntent = PendingIntent.getService(context, 201, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -105,7 +103,6 @@ public class Util {
         options.inJustDecodeBounds = true;
         Bitmap bitmapOriginal = BitmapFactory.decodeResource(context.getResources(), R.drawable.background, options);
 
-
         // Calculate inSampleSize
         options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
         // Decode bitmap with inSampleSize set
@@ -134,21 +131,5 @@ public class Util {
         }
 
         return inSampleSize;
-    }
-
-    public static void printTime() {
-        DateTime dateTime = new DateTime();
-        Log.d("VIVZ", "datetime: " + dateTime);
-        LocalDateTime localDateTime = new LocalDateTime();
-        Log.d("VIVZ", "localDateTime: " + localDateTime);
-        DateTimeZone timeZone = DateTimeZone.getDefault();
-        Log.d("VIVZ", "localDateTime with default time zone" + localDateTime.toDateTime(timeZone));
-        long currentTime = System.currentTimeMillis();
-        int offset = timeZone.getOffset(currentTime);
-        Log.d("VIVZ", "offset" + offset);
-        DateTimeZone nonDefaultTimeZone = DateTimeZone.forOffsetMillis(offset);
-        Log.d("VIVZ", "nondefault time zone" + nonDefaultTimeZone);
-        DateTimeZone nonDefaultZone = DateTimeZone.forTimeZone(TimeZone.getDefault());
-        Log.d("VIVZ", "nondefault time zone 2" + nonDefaultZone);
     }
 }

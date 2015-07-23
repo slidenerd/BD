@@ -14,6 +14,7 @@ import static slidenerd.vivz.bucketdrops.adapters.SortOptions.SORT_ASCENDING_DAT
 import static slidenerd.vivz.bucketdrops.adapters.SortOptions.SORT_DESCENDING_DATE;
 
 public class BucketLoader extends CursorLoader {
+    //The SQLite database from where you want to read drops
     private Database mDatabase;
     private Bundle mArguments;
 
@@ -27,6 +28,7 @@ public class BucketLoader extends CursorLoader {
     public Cursor loadInBackground() {
         Cursor cursor = null;
         if (mArguments != null) {
+            //Based on the chosen sorting option retrieved from the arguments passed while creating this loader, return the appropriate Cursor, if the specified sorting options are incorrect or none are specified, then load the results in the order in which they were added and return the Cursor containing those results.
             int sortOptions = mArguments.getInt(KEY_SORT_OPTION);
             switch (sortOptions) {
                 case SORT_ASCENDING_DATE:
