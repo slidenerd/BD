@@ -3,7 +3,6 @@ package slidenerd.vivz.bucketdrops.services;
 import android.app.IntentService;
 import android.content.Intent;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -11,6 +10,7 @@ import br.com.goncalves.pugnotification.notification.PugNotification;
 import slidenerd.vivz.bucketdrops.R;
 import slidenerd.vivz.bucketdrops.beans.Drop;
 import slidenerd.vivz.bucketdrops.database.Database;
+import slidenerd.vivz.bucketdrops.extras.Util;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
@@ -44,9 +44,10 @@ public class NotificationService extends IntentService {
         //If yes fire a notification for such items, else do nothing
         ArrayList<Drop> listDrops = mDatabase.getAllDrops();
         long now = System.currentTimeMillis();
+        for (final Drop current : listDrops) {
 
-        for (Drop current : listDrops) {
-            if (has90PercentTimeElapsed(current.added, current.when, now)) {
+
+            if (!hasDropElapsed(current.when, now) && has90PercentTimeElapsed(current.added, current.when, now)) {
                 buildNotification(current);
             }
         }
@@ -64,15 +65,18 @@ public class NotificationService extends IntentService {
         }
     }
 
+    private boolean hasDropElapsed(long when, long now) {
+        return when < now ? true : false;
+    }
+
     private void buildNotification(Drop drop) {
         PugNotification.with(this)
                 .load()
-                .title("Remember, you wanted to")
-                .message(drop.what)
-                .bigTextStyle(drop.what + " on " + drop.when)
+                .title(drop.what)
+                .message("You added this drop on " + Util.getFormattedDate(drop.when))
                 .smallIcon(R.drawable.pugnotification_ic_launcher)
                 .largeIcon(R.drawable.pugnotification_ic_launcher)
-                .custom()
+                .simple()
                 .build();
     }
 }
