@@ -29,12 +29,6 @@ public class Database {
         mDatabase = mHelper.getWritableDatabase();
     }
 
-
-    public static String[] getAllColumnNames() {
-        String[] columnnNames = new String[]{Helper.COL_ID, Helper.COL_WHAT, Helper.COL_ADDED, Helper.COL_WHEN, Helper.COL_STATUS};
-        return columnnNames;
-    }
-
     /**
      * Return a cursor object with all rows in the table.
      *
@@ -46,19 +40,28 @@ public class Database {
         return cursor;
     }
 
+    /**
+     * @return Cursor object containing all drops ordered in such a way that the drop with the nearest target date comes first
+     */
     public Cursor readAllSortedByDateAddedAsc() {
         String columns[] = new String[]{Helper.COL_ID, Helper.COL_WHAT, Helper.COL_ADDED, Helper.COL_WHEN, Helper.COL_STATUS};
         Cursor cursor = mDatabase.query(Helper.TABLE_NAME, columns, null, null, null, null, Helper.COL_WHEN + " ASC");
         return cursor;
     }
 
+    /**
+     * @return Cursor object containing all drops ordered in such a way that the drop with the nearest target date comes last
+     */
     public Cursor readAllSortedByDateAddedDesc() {
         String columns[] = new String[]{Helper.COL_ID, Helper.COL_WHAT, Helper.COL_ADDED, Helper.COL_WHEN, Helper.COL_STATUS};
         Cursor cursor = mDatabase.query(Helper.TABLE_NAME, columns, null, null, null, null, Helper.COL_WHEN + " DESC");
         return cursor;
     }
 
-    public Cursor readAllShowComplete() {
+    /**
+     * @return Cursor object containing all drops ordered in such a way that the ones marked complete by the user are returned
+     */
+    public Cursor readAllComplete() {
         String columns[] = new String[]{Helper.COL_ID, Helper.COL_WHAT, Helper.COL_ADDED, Helper.COL_WHEN, Helper.COL_STATUS};
         String selection = Helper.COL_STATUS + " = ? ";
         String[] selectionArgs = new String[]{String.valueOf(1)};
@@ -67,7 +70,10 @@ public class Database {
         return cursor;
     }
 
-    public Cursor readAllShowIncomplete() {
+    /**
+     * @return Cursor object containing all the drops ordered in such a way that the ones that are not marked complete by the user are returned. Notice there is a significant difference in saying "not marked" vs "incomplete" in this app because any drop that the user of this app has not marked complete is assumed to be incomplete whether it is yet to approach its target date or its target date has already elapsed
+     */
+    public Cursor readAllIncomplete() {
         String columns[] = new String[]{Helper.COL_ID, Helper.COL_WHAT, Helper.COL_ADDED, Helper.COL_WHEN, Helper.COL_STATUS};
         String selection = Helper.COL_STATUS + " = ? ";
         String[] selectionArgs = new String[]{String.valueOf(0)};
@@ -76,6 +82,9 @@ public class Database {
         return cursor;
     }
 
+    /**
+     * @return An ArrayList containing all the Drops retrieved in the order in which the user added them to the database
+     */
     public ArrayList<Drop> getAllDrops() {
         String[] columns = new String[]{Helper.COL_WHAT, Helper.COL_ADDED, Helper.COL_WHEN, Helper.COL_STATUS};
         String orderBy = Helper.COL_WHEN + " ASC";
@@ -109,30 +118,45 @@ public class Database {
         return id;
     }
 
+    /**
+     * @param todoId is the value of _id of a Drop that you want to delete from the SQLite database
+     * @return an integer indicating the number of rows that were removed in this case
+     */
     public int delete(long todoId) {
-        int numberOfRowsAffected = 0;
+        int numberOfRowsDeleted = 0;
         String whereClause = Helper.COL_ID + " =? ";
         String[] whereArgs = new String[]{String.valueOf(todoId)};
-        numberOfRowsAffected = mDatabase.delete(Helper.TABLE_NAME, whereClause, whereArgs);
-        return numberOfRowsAffected;
+        numberOfRowsDeleted = mDatabase.delete(Helper.TABLE_NAME, whereClause, whereArgs);
+        return numberOfRowsDeleted;
     }
 
+    /**
+     * Delete all the items from the 'Drop' table and reset the auto increment SQLite counter for the primary index column _id
+     */
     public void deleteAll() {
         mDatabase.delete(Helper.TABLE_NAME, null, null);
         mDatabase.delete("sqlite_sequence", "name = ?", new String[]{Helper.TABLE_NAME});
     }
 
 
+    /**
+     * @param dropId is the value of the column _id of a Drop which we would like to mark as complete as and when triggered by the user
+     * @return an integer value indicating the number of rows updated in this case
+     */
     public int markAsComplete(long dropId) {
-        int numberOfRowsAffected = 0;
+        int numberOfRowsUpdated = 0;
         if (dropId >= 0) {
             ContentValues row = new ContentValues();
             row.put(Helper.COL_STATUS, 1);
-            numberOfRowsAffected = mDatabase.update(Helper.TABLE_NAME, row, Helper.COL_ID + " = ?", new String[]{dropId + ""});
+            numberOfRowsUpdated = mDatabase.update(Helper.TABLE_NAME, row, Helper.COL_ID + " = ?", new String[]{dropId + ""});
         }
-        return numberOfRowsAffected;
+        return numberOfRowsUpdated;
     }
 
+    /**
+     * @param drop an object whose itemid or value of the column _id we would like to retrieve
+     * @return the value of the item id or column _id of the given drop
+     */
     public long getId(Drop drop) {
         long rowId = -1;
         String[] columns = {Helper.COL_ID};

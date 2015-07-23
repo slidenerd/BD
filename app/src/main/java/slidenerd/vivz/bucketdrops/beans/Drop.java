@@ -20,24 +20,31 @@ public class Drop {
         this.status = status;
     }
 
+    /**
+     * @return 1 to indicate that a drop is complete if the status is true otherwise 0
+     */
     public String getStatusAsString() {
         return (status == true) ? String.valueOf(1) : String.valueOf(0);
     }
 
-    public boolean getStatusAsBoolean(String statusString) {
-        boolean status = false;
+    /**
+     * @param status is a String which is expected to be 1 or 0, if its 1 it means our drop was marked as complete by the user otherwise the user has not taken any action on the drop
+     * @return true if the status is 1 or false otherwise
+     */
+    public boolean getStatusAsBoolean(String status) {
         try {
-            status = Integer.parseInt(statusString) == 1 ? true : false;
+            return Integer.parseInt(status) == 1 ? true : false;
         } catch (NumberFormatException e) {
-
+            return false;
         }
-        return status;
     }
 
-    public boolean getStatusAsBoolean(int statusInt) {
-        boolean status = false;
-        status = statusInt == 1 ? true : false;
-        return status;
+    /**
+     * @param status either 1 to indicate that our drop was marked complete by the user or 0 if the user has not taken any action on the drop
+     * @return true if the status is 1 or false otherwise
+     */
+    public boolean getStatusAsBoolean(int status) {
+        return status == 1 ? true : false;
     }
 
     @Override
@@ -45,6 +52,9 @@ public class Drop {
         return "\nwhat: " + what + "\nadded: " + added + "\nwhen: " + when + "\nstatus: " + status;
     }
 
+    /**
+     * @return boolean indicating whether the drop is marked as complete by the user
+     */
     public boolean isComplete() {
         return status == true;
     }

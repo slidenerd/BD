@@ -36,10 +36,10 @@ public class BucketLoader extends CursorLoader {
                     cursor = mDatabase.readAllSortedByDateAddedDesc();
                     break;
                 case SHOW_COMPLETE:
-                    cursor = mDatabase.readAllShowComplete();
+                    cursor = mDatabase.readAllComplete();
                     break;
                 case SHOW_INCOMPLETE:
-                    cursor = mDatabase.readAllShowIncomplete();
+                    cursor = mDatabase.readAllIncomplete();
                     break;
                 default:
                     cursor = mDatabase.readAll();
