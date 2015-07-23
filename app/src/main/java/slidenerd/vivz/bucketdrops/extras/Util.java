@@ -31,7 +31,7 @@ public class Util {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, NotificationService.class);
         PendingIntent pendingIntent = PendingIntent.getService(context, 201, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME, 1000, 3600000, pendingIntent);
+        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME, 1000, 14400000, pendingIntent);
     }
 
     /**

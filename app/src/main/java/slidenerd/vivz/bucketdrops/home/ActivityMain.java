@@ -82,9 +82,12 @@ public class ActivityMain extends AppCompatActivity implements
         initRecycler();
         if (savedInstanceState != null) {
             sortOption = savedInstanceState.getInt(KEY_SORT_OPTION);
+            Util.notifyUpcomingDrops(this);
+        } else {
+            Util.notifyUpcomingDrops(this);
         }
         startLoader(sortOption, false);
-        Util.notifyUpcomingDrops(this);
+
 
     }
 
