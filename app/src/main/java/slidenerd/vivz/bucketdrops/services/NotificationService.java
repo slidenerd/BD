@@ -50,15 +50,20 @@ public class NotificationService extends IntentService {
                 fireNotification(current);
             }
         }
+        mDatabase.close();
     }
 
     private boolean has90PercentTimeElapsed(long added, long when, long now) {
         //total duration between target and added date
-        long difference = when - added;
-        //90% of the total duration
-        long ninetyPercentDifference = (long) (0.9 * difference);
-        //if more than 90% time has elapsed since the drop was added, then return true else return false
-        return (now > (added + ninetyPercentDifference)) ? true : false;
+        if (now > when) {
+            return false;
+        } else {
+            long difference = when - added;
+            //90% of the total duration
+            long ninetyPercentDifference = (long) (0.9 * difference);
+            //if more than 90% time has elapsed since the drop was added, then return true else return false
+            return (now > (added + ninetyPercentDifference)) ? true : false;
+        }
     }
 
     private void fireNotification(Drop drop) {
