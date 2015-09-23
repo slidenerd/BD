@@ -9,27 +9,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.TextView;
 
 import slidenerd.vivz.bucketdrops.R;
-import slidenerd.vivz.bucketdrops.extras.Util;
 
 
 public class DialogActions extends DialogFragment implements View.OnClickListener {
 
     private Bundle mArguments;
-    private TextView mTextCompleted;
     private Button mBtnMarkCompleted;
     private ImageButton mBtnClose;
-    private Actions mListener;
+    private ActionListener mListener;
     private Activity mContext;
-
-    /**
-     * @return the id of the item clicking which this Dialog was launched
-     */
-    private long getDropId() {
-        return mArguments.getLong(Actions.DROP_POSITION);
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,7 +40,7 @@ public class DialogActions extends DialogFragment implements View.OnClickListene
         return inflater.inflate(R.layout.dialog_actions, container, false);
     }
 
-    public void setDialogActionsListener(Actions listener) {
+    public void setDialogActionsListener(ActionListener listener) {
         mListener = listener;
     }
 
@@ -58,12 +48,10 @@ public class DialogActions extends DialogFragment implements View.OnClickListene
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mTextCompleted = (TextView) view.findViewById(R.id.btn_completed);
         mBtnMarkCompleted = (Button) view.findViewById(R.id.btn_completed);
         mBtnClose = (ImageButton) view.findViewById(R.id.btn_dialog_close);
         mBtnMarkCompleted.setOnClickListener(this);
         mBtnClose.setOnClickListener(this);
-        mTextCompleted.setTypeface(Util.loadRalewayRegular(mContext));
     }
 
 
@@ -80,16 +68,16 @@ public class DialogActions extends DialogFragment implements View.OnClickListene
     private void completeAction() {
         if (mListener == null) return;
         //When the user marks an item as complete, get the item's id and notify the interested listeners so that they can further process this event
-        mListener.onClickComplete(getDropId());
+        int position = mArguments.getInt(ActionListener.POSITION);
+        mListener.onClickComplete(position);
     }
 
     /**
      * Created by vivz on 14/07/15.
      */
-    public static interface Actions {
-        String DROP_POSITION = "drop_position";
+    public interface ActionListener {
+        String POSITION = "position";
 
-        void onClickComplete(long dropId);
-
+        void onClickComplete(int position);
     }
 }

@@ -5,6 +5,8 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
 
+import slidenerd.vivz.bucketdrops.adapters.AbstractRealmAdapter;
+
 public class BucketRecyclerView extends RecyclerView {
     /**
      * The View to display when the RecyclerView has no items at all
@@ -18,17 +20,22 @@ public class BucketRecyclerView extends RecyclerView {
          */
         @Override
         public void onChanged() {
-            Adapter<?> adapter = getAdapter();
-            if (adapter != null && mEmptyView != null) {
-                if (adapter.getItemCount() == 0) {
-                    mEmptyView.setVisibility(View.VISIBLE);
-                    BucketRecyclerView.this.setVisibility(View.GONE);
-                } else {
-                    mEmptyView.setVisibility(View.GONE);
-                    BucketRecyclerView.this.setVisibility(View.VISIBLE);
-                }
-            }
+            checkIfEmpty();
+        }
 
+        @Override
+        public void onItemRangeChanged(int positionStart, int itemCount) {
+            checkIfEmpty();
+        }
+
+        @Override
+        public void onItemRangeInserted(int positionStart, int itemCount) {
+            checkIfEmpty();
+        }
+
+        @Override
+        public void onItemRangeRemoved(int positionStart, int itemCount) {
+            checkIfEmpty();
         }
     };
 
@@ -44,10 +51,26 @@ public class BucketRecyclerView extends RecyclerView {
         super(context, attrs, defStyle);
     }
 
+    private void checkIfEmpty() {
+        AbstractRealmAdapter adapter = (AbstractRealmAdapter) getAdapter();
+        if (adapter != null && mEmptyView != null) {
+            if (adapter.getCount() == 0) {
+                mEmptyView.setVisibility(View.VISIBLE);
+                BucketRecyclerView.this.setVisibility(View.GONE);
+            } else {
+                mEmptyView.setVisibility(View.GONE);
+                BucketRecyclerView.this.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
     @Override
     public void setAdapter(Adapter adapter) {
         super.setAdapter(adapter);
 
+        if (!(adapter instanceof AbstractRealmAdapter)) {
+            throw new IllegalArgumentException("Adapter must be a subclass of abstract realm adapter");
+        }
         if (adapter != null) {
             //Register an AdapterDataSetObserver to monitor the number of items in the RecyclerView whenever items are being added, removed
             adapter.registerAdapterDataObserver(mEmptyObserver);

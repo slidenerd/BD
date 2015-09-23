@@ -14,7 +14,11 @@ import android.util.DisplayMetrics;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import java.util.ArrayList;
+
+import io.realm.RealmResults;
 import slidenerd.vivz.bucketdrops.R;
+import slidenerd.vivz.bucketdrops.beans.Drop;
 import slidenerd.vivz.bucketdrops.services.NotificationService;
 
 /**
@@ -131,5 +135,14 @@ public class Util {
         }
 
         return inSampleSize;
+    }
+
+    public static ArrayList<Drop> duplicateDrops(RealmResults<Drop> realmDrops) {
+        ArrayList<Drop> listDrops = new ArrayList<>();
+        for (Drop realmDrop : realmDrops) {
+            Drop drop = new Drop(realmDrop.getWhat(), realmDrop.getAdded(), realmDrop.getWhen(), realmDrop.isCompleted());
+            listDrops.add(drop);
+        }
+        return listDrops;
     }
 }

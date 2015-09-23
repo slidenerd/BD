@@ -5,7 +5,7 @@ package slidenerd.vivz.bucketdrops.adapters;
  */
 
 public interface SortOptions {
-    String KEY_SORT_OPTION = "sort_option";
+    String KEY = "sort_option";
     //The order in which the user added items to the bucket
     int SORT_DEFAULT = 0;
     //The items whose target completion date is the nearest

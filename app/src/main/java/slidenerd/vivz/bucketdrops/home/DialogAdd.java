@@ -72,7 +72,6 @@ public class DialogAdd extends DialogFragment implements View.OnClickListener, T
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        //init UI elements except the date picker
         initViews(view);
         //init the date picker
         initDatePicker(view);
@@ -80,21 +79,24 @@ public class DialogAdd extends DialogFragment implements View.OnClickListener, T
         mInputWhat.setOnEditorActionListener(this);
         mBtnClose.setOnClickListener(this);
         mBtnAddDrop.setOnClickListener(this);
-
         //load custom fonts wherever appropriate
         initCustomFont();
     }
 
     private void initViews(View view) {
         mTextTitle = (TextView) view.findViewById(R.id.text_dialog_title);
-        mInputWhat = (EditText) view.findViewById(R.id.input_task);
+        //The close button for this dialog
         mBtnClose = (ImageButton) view.findViewById(R.id.btn_dialog_close);
+        //The area where the user can type his/her goal
+        mInputWhat = (EditText) view.findViewById(R.id.input_task);
+        //The control with which user can select the date for his/her goal by which they feel they wanna accomplish their goal
+        mInputWhen = (DatePicker) view.findViewById(R.id.input_time);
+        //The button clicking which the goal and date will be added to the database
         mBtnAddDrop = (Button) view.findViewById(R.id.btn_add_drop);
-
     }
 
+
     private void initDatePicker(View view) {
-        mInputWhen = (DatePicker) view.findViewById(R.id.input_time);
         Calendar calendar = Calendar.getInstance(Locale.getDefault());
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
