@@ -13,10 +13,10 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import io.realm.Realm;
+import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 import slidenerd.vivz.bucketdrops.R;
 import slidenerd.vivz.bucketdrops.beans.Drop;
-import slidenerd.vivz.bucketdrops.extras.DataStore;
 import slidenerd.vivz.bucketdrops.extras.Util;
 import slidenerd.vivz.bucketdrops.home.BucketDropsApp;
 
@@ -57,19 +57,26 @@ public class DropRealmAdapter extends AbstractMutableRealmAdapter<Drop, Recycler
         int sortOption = BucketDropsApp.loadSortOption();
         RealmResults<Drop> realmResults = null;
         if (sortOption == SHOW_COMPLETE) {
-            realmResults = DataStore.getDropsComplete(realm);
+
+            realmResults = realm.where(Drop.class).equalTo("completed", true).findAllAsync();
         } else if (sortOption == SHOW_INCOMPLETE) {
-            realmResults = DataStore.getDropsIncomplete(realm);
+            realmResults = realm.where(Drop.class).equalTo("completed", false).findAllAsync();
         } else if (sortOption == SORT_ASCENDING_DATE) {
-            realmResults = DataStore.getDropsByDateAscending(realm);
+            realmResults = realm.where(Drop.class).findAllSortedAsync("when", true);
         } else if (sortOption == SORT_DESCENDING_DATE) {
-            realmResults = DataStore.getDropsByDateDescending(realm);
+            realmResults = realm.where(Drop.class).findAllSortedAsync("when", false);
         } else {
-            realmResults = DataStore.getDropsDefault(realm);
+            realmResults = realm.where(Drop.class).findAllAsync();
         }
         if (realmResults == null || realmResults.isEmpty() && sortOption != SORT_DEFAULT) {
-            realmResults = DataStore.getDropsDefault(realm);
+            realmResults = realm.where(Drop.class).findAllAsync();
         }
+        realmResults.addChangeListener(new RealmChangeListener() {
+            @Override
+            public void onChange() {
+                notifyDataSetChanged();
+            }
+        });
         return realmResults;
     }
 
@@ -87,12 +94,12 @@ public class DropRealmAdapter extends AbstractMutableRealmAdapter<Drop, Recycler
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == ItemType.FOOTER.ordinal()) {
-            View root = mLayoutInflater.inflate(R.layout.bucket_footer, parent, false);
+            View root = mLayoutInflater.inflate(R.layout.footer, parent, false);
             FooterHolder viewHolder = new FooterHolder(root);
             return viewHolder;
 
         } else {
-            View root = mLayoutInflater.inflate(R.layout.drop, parent, false);
+            View root = mLayoutInflater.inflate(R.layout.item, parent, false);
             DropHolder dropHolder = new DropHolder(root);
             return dropHolder;
         }

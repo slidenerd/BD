@@ -46,7 +46,7 @@ public class ActivityMain extends AppCompatActivity implements
     private Toolbar mToolbar;
     private DropRealmAdapter mAdapter;
     private ImageView mImgBackground;
-    //When the add drop button is clicked, show a dialog that lets the person add a new drop
+    //When the add item button is clicked, show a dialog that lets the person add a new item
     private View.OnClickListener mOnClickAddDropListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {

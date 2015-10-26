@@ -36,39 +36,6 @@ public class Util {
         alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME, 1000, 14400000, pendingIntent);
     }
 
-    /**
-     * This method converts dp unit to equivalent pixels, depending on device density.
-     *
-     * @param dp      SimpleItemTouchHelperCallback value in dp (density independent pixels) unit. Which we need to convert into pixels
-     * @param context Context to read resources and device specific display metrics
-     * @return SimpleItemTouchHelperCallback float value to represent px equivalent to dp depending on device density
-     */
-
-    public static float convertDpToPixel(float dp, Context context) {
-        Resources resources = context.getResources();
-        //pixels = dps * density of device / 160
-        //if density of device = 160, pixels = dps
-        DisplayMetrics displayMetrics = resources.getDisplayMetrics();
-        float pixels = dp * (displayMetrics.densityDpi) / 160.0F;
-        return pixels;
-    }
-
-    /**
-     * This method converts device specific pixels to density independent pixels.
-     *
-     * @param px      SimpleItemTouchHelperCallback value in px (pixels) unit. Which we need to convert into db
-     * @param context Context to read resources and device specific display metrics
-     * @return SimpleItemTouchHelperCallback float value to represent dp equivalent to px value
-     */
-    public static float convertPixelsToDp(float px, Context context) {
-        Resources resources = context.getResources();
-        //dps = pixels / (density of device / 160)
-        //if density of device = 160, dps = pixels
-        DisplayMetrics displayMetrics = resources.getDisplayMetrics();
-        float dp = px / (displayMetrics.densityDpi / 160.0F);
-        return dp;
-    }
-
     public static Typeface loadRalewayThin(Context context) {
 
         Typeface customFont = Typeface.createFromAsset(context.getAssets(), "fonts/raleway_thin.ttf");
