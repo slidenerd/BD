@@ -15,7 +15,7 @@
         android:layout_below="@+id/app_bar"
         android:scaleType="centerCrop" />
 
-    <slidenerd.vivz.bucketdrops.extras.BucketRecyclerView
+    <slidenerd.vivz.bucketdrops.widgets.BucketRecyclerView
         android:id="@+id/recycler_tasks"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

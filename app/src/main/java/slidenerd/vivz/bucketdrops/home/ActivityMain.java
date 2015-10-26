@@ -22,7 +22,7 @@ import slidenerd.vivz.bucketdrops.adapters.DropAdapter;
 import slidenerd.vivz.bucketdrops.adapters.OnAddDropListener;
 import slidenerd.vivz.bucketdrops.adapters.SimpleItemTouchHelperCallback;
 import slidenerd.vivz.bucketdrops.beans.Drop;
-import slidenerd.vivz.bucketdrops.extras.BucketRecyclerView;
+import slidenerd.vivz.bucketdrops.widgets.BucketRecyclerView;
 import slidenerd.vivz.bucketdrops.extras.Util;
 
 import static slidenerd.vivz.bucketdrops.adapters.SortOptions.SHOW_COMPLETE;

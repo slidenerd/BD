@@ -1,4 +1,4 @@
-package slidenerd.vivz.bucketdrops.extras;
+package slidenerd.vivz.bucketdrops.widgets;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

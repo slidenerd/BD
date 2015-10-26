@@ -4,17 +4,14 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.os.Build;
-import android.util.DisplayMetrics;
 
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import io.realm.RealmResults;
 import slidenerd.vivz.bucketdrops.R;
@@ -33,7 +30,7 @@ public class Util {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, NotificationService.class);
         PendingIntent pendingIntent = PendingIntent.getService(context, 201, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME, 1000, 14400000, pendingIntent);
+        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME, 1000, 10000, pendingIntent);
     }
 
     public static Typeface loadRalewayThin(Context context) {
@@ -55,13 +52,9 @@ public class Util {
         return Build.VERSION.SDK_INT > 20;
     }
 
-    public static boolean isIceCreamSandwichOrMore() {
-        return Build.VERSION.SDK_INT > 13;
-    }
-
     public static String getFormattedDate(long milliseconds) {
-        DateTimeFormatter formatter = DateTimeFormat.shortDate();
-        String outputDate = formatter.print(milliseconds);
+        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yy");
+        String outputDate = format.format(new Date(milliseconds));
         return outputDate;
     }
 

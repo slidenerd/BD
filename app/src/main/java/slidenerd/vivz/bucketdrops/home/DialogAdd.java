@@ -18,11 +18,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
-import org.joda.time.DateTimeZone;
-import org.joda.time.LocalDateTime;
-
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 
 import slidenerd.vivz.bucketdrops.R;
@@ -127,10 +124,9 @@ public class DialogAdd extends DialogFragment implements View.OnClickListener, T
             int dayOfMonth = mInputWhen.getDayOfMonth();
             int month = mInputWhen.getMonth();
             int year = mInputWhen.getYear();
-            LocalDateTime localDateTime = new LocalDateTime(year, month + 1, dayOfMonth, 0, 0, 0);
-            DateTimeZone timeZone = DateTimeZone.getDefault();
+            GregorianCalendar gregorianCalendar = new GregorianCalendar(year, month, dayOfMonth, 0, 0, 0);
             long currentTime = System.currentTimeMillis();
-            long when = localDateTime.toDateTime(timeZone).getMillis();
+            long when = gregorianCalendar.getTimeInMillis();
             if (when < currentTime) {
                 Toast.makeText(getActivity(), "Right Today? Are You Serious!", Toast.LENGTH_LONG).show();
             } else {

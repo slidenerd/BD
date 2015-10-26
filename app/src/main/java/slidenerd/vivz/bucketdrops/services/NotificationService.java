@@ -4,8 +4,6 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.util.Log;
 
-import java.util.ArrayList;
-
 import br.com.goncalves.pugnotification.notification.PugNotification;
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -44,9 +42,8 @@ public class NotificationService extends IntentService {
         try {
             realm = Realm.getDefaultInstance();
             RealmResults<Drop> realmResults = realm.where(Drop.class).equalTo("completed", false).findAll();
-            ArrayList<Drop> listIncompleteDrops = Util.duplicateDrops(realmResults);
             long now = System.currentTimeMillis();
-            for (final Drop current : listIncompleteDrops) {
+            for (final Drop current : realmResults) {
 
                 //If the target date for the current item is not already over and if 90% time has elapsed right now since the item was added, then fire a notification for the same
                 if (has90PercentTimeElapsed(current.getAdded(), current.getWhen(), now)) {
