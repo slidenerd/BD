@@ -6,26 +6,27 @@ import io.realm.Realm;
 import io.realm.RealmObject;
 import io.realm.RealmResults;
 
-public abstract class AbstractRealmAdapter<T extends RealmObject, VH extends RecyclerView.ViewHolder>
+public abstract class RealmAdapter<T extends RealmObject, VH extends RecyclerView.ViewHolder>
         extends RecyclerView.Adapter<VH> {
+    private static final int HEADER_COUNT = 1;
+    private static final int FOOTER_COUNT = 1;
     protected RealmResults<T> mRealmResults;
 
-    public AbstractRealmAdapter(Realm realm) {
+    public RealmAdapter(Realm realm) {
         mRealmResults = getData(realm);
-        notifyItemRangeChanged(0, mRealmResults.size());
     }
 
     public int getHeaderCount() {
-        return hasHeader() ? 1 : 0;
+        return hasHeader() ? HEADER_COUNT : 0;
     }
 
     public int getFooterCount() {
-        return hasFooter() ? 1 : 0;
+        return hasFooter() ? FOOTER_COUNT : 0;
     }
 
     public boolean isHeader(int position) {
         if (hasHeader()) {
-            return position == 0;
+            return position < HEADER_COUNT;
         } else {
             return false;
         }

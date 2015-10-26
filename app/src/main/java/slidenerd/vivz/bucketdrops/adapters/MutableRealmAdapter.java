@@ -5,12 +5,12 @@ import android.support.v7.widget.RecyclerView;
 import io.realm.Realm;
 import io.realm.RealmObject;
 
-public abstract class AbstractMutableRealmAdapter<T extends RealmObject, VH extends RecyclerView.ViewHolder>
-        extends AbstractRealmAdapter<T, VH> implements OnSwipeListener {
+public abstract class MutableRealmAdapter<T extends RealmObject, VH extends RecyclerView.ViewHolder>
+        extends RealmAdapter<T, VH> implements OnSwipeListener {
 
     private Realm realm;
 
-    public AbstractMutableRealmAdapter(Realm realm) {
+    public MutableRealmAdapter(Realm realm) {
         super(realm);
         this.realm = realm;
     }

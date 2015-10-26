@@ -29,7 +29,7 @@ import static slidenerd.vivz.bucketdrops.adapters.SortOptions.SORT_DESCENDING_DA
 /**
  * Created by vivz on 18/07/15.
  */
-public class DropRealmAdapter extends AbstractMutableRealmAdapter<Drop, RecyclerView.ViewHolder> {
+public class DropAdapter extends MutableRealmAdapter<Drop, RecyclerView.ViewHolder> {
     private Context mContext;
     private LayoutInflater mLayoutInflater;
     //An object interested in processing events when the footer of this RecyclerView is clicked
@@ -38,7 +38,7 @@ public class DropRealmAdapter extends AbstractMutableRealmAdapter<Drop, Recycler
     private ItemClickListener mItemClickListener;
     private Realm mRealm;
 
-    public DropRealmAdapter(Context context, Realm realm) {
+    public DropAdapter(Context context, Realm realm) {
         super(realm);
         mRealm = realm;
         mContext = context;

@@ -18,7 +18,7 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 import slidenerd.vivz.bucketdrops.R;
 import slidenerd.vivz.bucketdrops.adapters.Divider;
-import slidenerd.vivz.bucketdrops.adapters.DropRealmAdapter;
+import slidenerd.vivz.bucketdrops.adapters.DropAdapter;
 import slidenerd.vivz.bucketdrops.adapters.OnAddDropListener;
 import slidenerd.vivz.bucketdrops.adapters.SimpleItemTouchHelperCallback;
 import slidenerd.vivz.bucketdrops.beans.Drop;
@@ -33,8 +33,8 @@ import static slidenerd.vivz.bucketdrops.adapters.SortOptions.SORT_DESCENDING_DA
 
 public class ActivityMain extends AppCompatActivity implements
         OnAddDropListener,
-        DropRealmAdapter.FooterClickListener,
-        DropRealmAdapter.ItemClickListener,
+        DropAdapter.FooterClickListener,
+        DropAdapter.ItemClickListener,
         DialogActions.ActionListener {
 
     private Realm mRealm;
@@ -44,7 +44,7 @@ public class ActivityMain extends AppCompatActivity implements
     //The View to be displayed when the RecyclerView is empty.
     private View mEmptyTodos;
     private Toolbar mToolbar;
-    private DropRealmAdapter mAdapter;
+    private DropAdapter mAdapter;
     private ImageView mImgBackground;
     //When the add item button is clicked, show a dialog that lets the person add a new item
     private View.OnClickListener mOnClickAddDropListener = new View.OnClickListener() {
@@ -79,7 +79,7 @@ public class ActivityMain extends AppCompatActivity implements
         mBtnAddDrop = (Button) findViewById(R.id.btn_add_drop);
         mEmptyTodos = findViewById(R.id.recycler_empty_view);
         mBtnAddDrop.setOnClickListener(mOnClickAddDropListener);
-        mAdapter = new DropRealmAdapter(this, mRealm);
+        mAdapter = new DropAdapter(this, mRealm);
         //Let our Activity handle the event when the footer is clicked from our RecyclerView
         mAdapter.setOnFooterClickListener(this);
         //Let our Activity handle the event when the Add Drop button is clicked from the empty view
