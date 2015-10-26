@@ -82,7 +82,7 @@ public abstract class AbstractRealmAdapter<T extends RealmObject, VH extends Rec
     public void setData(RealmResults<T> results) {
         if (results != null) {
             mRealmResults = results;
-            notifyItemRangeChanged(0, results.size());
+            notifyDataSetChanged();
         }
     }
 

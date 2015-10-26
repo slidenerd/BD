@@ -2,6 +2,7 @@ package slidenerd.vivz.bucketdrops.extras;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -12,7 +13,7 @@ public class BucketRecyclerView extends RecyclerView {
      * The View to display when the RecyclerView has no items at all
      */
     private View mEmptyView;
-
+    private Toolbar mToolbar;
     private AdapterDataObserver mEmptyObserver = new AdapterDataObserver() {
 
         /**
@@ -53,13 +54,17 @@ public class BucketRecyclerView extends RecyclerView {
 
     private void checkIfEmpty() {
         AbstractRealmAdapter adapter = (AbstractRealmAdapter) getAdapter();
-        if (adapter != null && mEmptyView != null) {
+        if (adapter != null && mEmptyView != null && mToolbar != null) {
             if (adapter.getCount() == 0) {
                 mEmptyView.setVisibility(View.VISIBLE);
                 BucketRecyclerView.this.setVisibility(View.GONE);
+                mToolbar.setVisibility(View.GONE);
+
+
             } else {
                 mEmptyView.setVisibility(View.GONE);
                 BucketRecyclerView.this.setVisibility(View.VISIBLE);
+                mToolbar.setVisibility(View.VISIBLE);
             }
         }
     }
@@ -80,5 +85,9 @@ public class BucketRecyclerView extends RecyclerView {
 
     public void setEmptyView(View emptyView) {
         this.mEmptyView = emptyView;
+    }
+
+    public void setToolbar(Toolbar mToolbar) {
+        this.mToolbar = mToolbar;
     }
 }

@@ -29,13 +29,13 @@ import static slidenerd.vivz.bucketdrops.adapters.SortOptions.SORT_DESCENDING_DA
 /**
  * Created by vivz on 18/07/15.
  */
-public class DropRealmAdapter extends AbstractMutableRealmRealmAdapter<Drop, RecyclerView.ViewHolder> {
+public class DropRealmAdapter extends AbstractMutableRealmAdapter<Drop, RecyclerView.ViewHolder> {
     private Context mContext;
     private LayoutInflater mLayoutInflater;
     //An object interested in processing events when the footer of this RecyclerView is clicked
     private FooterClickListener mFooterClickListener;
     //An object interested in processing events when the AddDrop button of this RecyclerView is clicked
-    private DropClickListener mDropClickListener;
+    private ItemClickListener mItemClickListener;
     private Realm mRealm;
 
     public DropRealmAdapter(Context context, Realm realm) {
@@ -45,8 +45,8 @@ public class DropRealmAdapter extends AbstractMutableRealmRealmAdapter<Drop, Rec
         mLayoutInflater = LayoutInflater.from(context);
     }
 
-    public void setDropClickListener(DropClickListener listener) {
-        mDropClickListener = listener;
+    public void setDropClickListener(ItemClickListener listener) {
+        mItemClickListener = listener;
     }
 
     public void setOnFooterClickListener(FooterClickListener listener) {
@@ -126,7 +126,7 @@ public class DropRealmAdapter extends AbstractMutableRealmRealmAdapter<Drop, Rec
     /**
      * An interface that notifies your class when any item is clicked from your RecyclerView
      */
-    public interface DropClickListener {
+    public interface ItemClickListener {
         /**
          * @param position is the position of the item that was clicked by the user inside the RecylerView
          */
@@ -150,9 +150,9 @@ public class DropRealmAdapter extends AbstractMutableRealmRealmAdapter<Drop, Rec
         @Override
         public void onClick(View v) {
 
-            if (mDropClickListener != null) {
+            if (mItemClickListener != null) {
                 //Notify interested classes about the item that was clicked at the current position
-                mDropClickListener.onClickDrop(getAdapterPosition());
+                mItemClickListener.onClickDrop(getAdapterPosition());
             }
         }
 

@@ -34,12 +34,12 @@ import static slidenerd.vivz.bucketdrops.adapters.SortOptions.SORT_DESCENDING_DA
 public class ActivityMain extends AppCompatActivity implements
         OnAddDropListener,
         DropRealmAdapter.FooterClickListener,
-        DropRealmAdapter.DropClickListener,
+        DropRealmAdapter.ItemClickListener,
         DialogActions.ActionListener {
 
     private Realm mRealm;
     //The RecyclerView that displays all our items
-    private BucketRecyclerView mRecyclerDrops;
+    private BucketRecyclerView mRecycler;
     private Button mBtnAddDrop;
     //The View to be displayed when the RecyclerView is empty.
     private View mEmptyTodos;
@@ -75,7 +75,7 @@ public class ActivityMain extends AppCompatActivity implements
     }
 
     private void initRecycler() {
-        mRecyclerDrops = (BucketRecyclerView) findViewById(R.id.recycler_tasks);
+        mRecycler = (BucketRecyclerView) findViewById(R.id.recycler_tasks);
         mBtnAddDrop = (Button) findViewById(R.id.btn_add_drop);
         mEmptyTodos = findViewById(R.id.recycler_empty_view);
         mBtnAddDrop.setOnClickListener(mOnClickAddDropListener);
@@ -85,17 +85,21 @@ public class ActivityMain extends AppCompatActivity implements
         //Let our Activity handle the event when the Add Drop button is clicked from the empty view
         mAdapter.setDropClickListener(this);
         //Set an Empty View to be displayed when the RecyclerView has no items
-        mRecyclerDrops.setEmptyView(mEmptyTodos);
+        mRecycler.setEmptyView(mEmptyTodos);
+
+        //hide the toolbar when the bucket is empty and show it when it has atleast one item in it
+        mRecycler.setToolbar(mToolbar);
+
         //Add a divider to our RecyclerView
-        mRecyclerDrops.addItemDecoration(new Divider(this, LinearLayoutManager.VERTICAL));
-        mRecyclerDrops.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerDrops.setItemAnimator(new DefaultItemAnimator());
+        mRecycler.addItemDecoration(new Divider(this, LinearLayoutManager.VERTICAL));
+        mRecycler.setLayoutManager(new LinearLayoutManager(this));
+        mRecycler.setItemAnimator(new DefaultItemAnimator());
         //Handler the swipe from our RecyclerView
         ItemTouchHelper.Callback callback =
                 new SimpleItemTouchHelperCallback(mAdapter);
         ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
-        touchHelper.attachToRecyclerView(mRecyclerDrops);
-        mRecyclerDrops.setAdapter(mAdapter);
+        touchHelper.attachToRecyclerView(mRecycler);
+        mRecycler.setAdapter(mAdapter);
     }
 
     private void initBackgroundImage() {
