@@ -11,8 +11,10 @@
 
     </item>
     <item
+        android:bottom="4dp"
         android:drawable="@drawable/ic_menu_up_transparent"
         android:left="24dp"
-        android:right="24dp" />
+        android:right="24dp"
+        android:top="4dp" />
 
 </layer-list>
