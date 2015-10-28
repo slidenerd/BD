@@ -11,10 +11,8 @@
 
     </item>
     <item
-        android:bottom="10dp"
-        android:drawable="@android:drawable/arrow_up_float"
-        android:left="32dp"
-        android:right="32dp"
-        android:top="10dp" />
+        android:drawable="@drawable/ic_menu_up_transparent"
+        android:left="24dp"
+        android:right="24dp" />
 
 </layer-list>
