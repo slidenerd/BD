@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -26,6 +25,7 @@ import slidenerd.vivz.bucketdrops.R;
 import slidenerd.vivz.bucketdrops.adapters.OnAddDropListener;
 import slidenerd.vivz.bucketdrops.beans.Drop;
 import slidenerd.vivz.bucketdrops.extras.Util;
+import slidenerd.vivz.bucketdrops.widgets.CustomDatePicker;
 
 
 public class DialogAdd extends DialogFragment implements View.OnClickListener, TextView.OnEditorActionListener {
@@ -38,7 +38,7 @@ public class DialogAdd extends DialogFragment implements View.OnClickListener, T
     //The area where the user can type his/her goal
     private EditText mInputWhat;
     //The control with which user can select the date for his/her goal by which they feel they wanna accomplish their goal
-    private DatePicker mInputWhen;
+    private CustomDatePicker mInputWhen;
     //The button clicking which the goal and date will be added to the database
     private Button mBtnAddDrop;
     //The object which will be notified when the user hits the "Add Drop" button
@@ -64,7 +64,7 @@ public class DialogAdd extends DialogFragment implements View.OnClickListener, T
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.dialog_add, container, false);
+        return inflater.inflate(R.layout.dialog_add_2, container, false);
     }
 
     @Override
@@ -88,7 +88,7 @@ public class DialogAdd extends DialogFragment implements View.OnClickListener, T
         //The area where the user can type his/her goal
         mInputWhat = (EditText) view.findViewById(R.id.input_task);
         //The control with which user can select the date for his/her goal by which they feel they wanna accomplish their goal
-        mInputWhen = (DatePicker) view.findViewById(R.id.input_time);
+        mInputWhen = (CustomDatePicker) view.findViewById(R.id.input_time);
         //The button clicking which the goal and date will be added to the database
         mBtnAddDrop = (Button) view.findViewById(R.id.btn_add_drop);
     }
@@ -121,9 +121,9 @@ public class DialogAdd extends DialogFragment implements View.OnClickListener, T
         if (mOnAddDropListener != null) {
             //Load the taskname, convert the user entered date to a specific value of 0 hours 0 minutes and 0 seconds, 12 am precisely on the day they want things to be done
             String taskName = mInputWhat.getText().toString();
-            int dayOfMonth = mInputWhen.getDayOfMonth();
-            int month = mInputWhen.getMonth();
-            int year = mInputWhen.getYear();
+            int dayOfMonth = 0;
+            int month = 0;
+            int year = 0;
             GregorianCalendar gregorianCalendar = new GregorianCalendar(year, month, dayOfMonth, 0, 0, 0);
             long currentTime = System.currentTimeMillis();
             long when = gregorianCalendar.getTimeInMillis();

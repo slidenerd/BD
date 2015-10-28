@@ -2,7 +2,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#E30D0028"
-    android:padding="24dp">
+    android:padding="32dp">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -58,8 +58,7 @@
             android:id="@+id/input_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/input_task"
-            android:background="#E30D0028" />
+            android:layout_below="@+id/input_task" />
 
         <Button
             android:id="@+id/btn_add_drop"
