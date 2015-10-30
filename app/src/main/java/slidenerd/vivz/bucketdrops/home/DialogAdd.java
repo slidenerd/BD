@@ -64,7 +64,7 @@ public class DialogAdd extends DialogFragment implements View.OnClickListener, T
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.dialog_add_2, container, false);
+        return inflater.inflate(R.layout.dialog_add, container, false);
     }
 
     @Override

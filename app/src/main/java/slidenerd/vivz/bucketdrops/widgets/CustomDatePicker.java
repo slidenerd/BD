@@ -15,6 +15,10 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import slidenerd.vivz.bucketdrops.R;
 import slidenerd.vivz.bucketdrops.extras.Util;
 
@@ -24,16 +28,17 @@ import slidenerd.vivz.bucketdrops.extras.Util;
  */
 public class CustomDatePicker extends LinearLayout implements View.OnTouchListener {
 
-    public static final int LEFT = 0;
     public static final int TOP = 1;
-    public static final int RIGHT = 2;
     public static final int BOTTOM = 3;
 
     public static final int DAY = 0;
     public static final int MONTH = 1;
     public static final int YEAR = 2;
 
+    private SimpleDateFormat mFormatter;
+    private Calendar mCalendar;
 
+    private String[] mMonthNames;
     private Context mContext;
     private TextView mTextMonth;
     private TextView mTextDay;
@@ -41,6 +46,11 @@ public class CustomDatePicker extends LinearLayout implements View.OnTouchListen
     private Typeface mTypeface;
     private int[] point = new int[2];
     private Drawable[] mCompoundDrawables = new Drawable[4];
+
+    private String mCurrentDate;
+    private int mCurrentYear;
+    private int mCurrentDay;
+    private int mCurrentMonth;
 
     public CustomDatePicker(Context context) {
         super(context);
@@ -65,7 +75,10 @@ public class CustomDatePicker extends LinearLayout implements View.OnTouchListen
 
     public void init(Context context) {
         mContext = context;
+        mMonthNames = getResources().getStringArray(R.array.months);
         mTypeface = Typeface.createFromAsset(mContext.getAssets(), "fonts/raleway_thin.ttf");
+        mFormatter = new SimpleDateFormat("yyyy-MM-dd");
+        mCalendar = Calendar.getInstance();
     }
 
     @Override
@@ -81,9 +94,26 @@ public class CustomDatePicker extends LinearLayout implements View.OnTouchListen
         mTextMonth.setTypeface(mTypeface);
         mTextYear.setTypeface(mTypeface);
 
-        mTextDay.setOnTouchListener(this);
-        mTextMonth.setOnTouchListener(this);
-        mTextYear.setOnTouchListener(this);
+        try {
+            mCurrentYear = mCalendar.get(Calendar.YEAR);
+            mCurrentMonth = mCalendar.get(Calendar.MONTH);
+            mCurrentDay = mCalendar.get(Calendar.DATE);
+
+            Log.d("VIVZ", mCurrentMonth + "");
+            mCurrentDate = mCurrentYear + "-" + (mCurrentMonth + 1) + "-" + mCurrentDay;
+            mCalendar.setTime(mFormatter.parse(mCurrentDate));
+            Log.d("VIVZ", mCalendar.getTime().toString());
+            mTextYear.setText(mCurrentYear + "");
+            mTextMonth.setText(mMonthNames[mCurrentMonth]);
+            mTextDay.setText(mCurrentDay + "");
+
+            mTextDay.setOnTouchListener(this);
+            mTextMonth.setOnTouchListener(this);
+            mTextYear.setOnTouchListener(this);
+        } catch (ParseException e) {
+            Log.d("VIVZ", "parsing error");
+        }
+
 
     }
 
@@ -132,36 +162,45 @@ public class CustomDatePicker extends LinearLayout implements View.OnTouchListen
     }
 
     private void increment(int quantity) {
-        String message = "";
         switch (quantity) {
             case DAY:
-                message = "day";
+                mCalendar.add(Calendar.DATE, 1);
                 break;
             case MONTH:
-                message = "month";
+                mCalendar.add(Calendar.MONTH, 1);
                 break;
             case YEAR:
-                message = "year";
+                mCalendar.add(Calendar.YEAR, 1);
                 break;
         }
-        Log.d("VIVZ", "increment " + message);
+        mCurrentDay = mCalendar.get(Calendar.DATE);
+        mCurrentMonth = mCalendar.get(Calendar.MONTH);
+        mCurrentYear = mCalendar.get(Calendar.YEAR);
+        mTextDay.setText(mCurrentDay + "");
+        mTextMonth.setText(mMonthNames[mCurrentMonth]);
+        mTextYear.setText(mCurrentYear + "");
     }
 
     private void decrement(int quantity) {
-        String message = "";
         switch (quantity) {
             case DAY:
-                message = "day";
+                mCalendar.add(Calendar.DATE, -1);
                 break;
             case MONTH:
-                message = "month";
+                mCalendar.add(Calendar.MONTH, -1);
                 break;
             case YEAR:
-                message = "year";
+                mCalendar.add(Calendar.YEAR, -1);
                 break;
         }
-        Log.d("VIVZ", "decrement " + message);
+        mCurrentDay = mCalendar.get(Calendar.DATE);
+        mCurrentMonth = mCalendar.get(Calendar.MONTH);
+        mCurrentYear = mCalendar.get(Calendar.YEAR);
+        mTextDay.setText(mCurrentDay + "");
+        mTextMonth.setText(mMonthNames[mCurrentMonth]);
+        mTextYear.setText(mCurrentYear + "");
     }
+
 
     private void toggleDrawable(TextView textView, int index, boolean pressed) {
         Drawable[] drawables = textView.getCompoundDrawables();
@@ -184,4 +223,5 @@ public class CustomDatePicker extends LinearLayout implements View.OnTouchListen
             textView.setCompoundDrawablesWithIntrinsicBounds(drawables[0], drawables[1], drawables[2], drawable);
         }
     }
+
 }
