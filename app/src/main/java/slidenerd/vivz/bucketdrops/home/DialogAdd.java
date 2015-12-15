@@ -121,9 +121,10 @@ public class DialogAdd extends DialogFragment implements View.OnClickListener, T
         if (mOnAddDropListener != null) {
             //Load the taskname, convert the user entered date to a specific value of 0 hours 0 minutes and 0 seconds, 12 am precisely on the day they want things to be done
             String taskName = mInputWhat.getText().toString();
-            int dayOfMonth = 0;
-            int month = 0;
-            int year = 0;
+
+            int dayOfMonth = mInputWhen.getDay();
+            int month = mInputWhen.getMonth();
+            int year = mInputWhen.getYear();
             GregorianCalendar gregorianCalendar = new GregorianCalendar(year, month, dayOfMonth, 0, 0, 0);
             long currentTime = System.currentTimeMillis();
             long when = gregorianCalendar.getTimeInMillis();

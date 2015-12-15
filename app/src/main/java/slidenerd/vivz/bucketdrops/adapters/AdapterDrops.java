@@ -13,114 +13,157 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import io.realm.Realm;
-import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 import slidenerd.vivz.bucketdrops.R;
 import slidenerd.vivz.bucketdrops.beans.Drop;
 import slidenerd.vivz.bucketdrops.extras.Util;
 import slidenerd.vivz.bucketdrops.home.BucketDropsApp;
 
-import static slidenerd.vivz.bucketdrops.adapters.SortOptions.SHOW_COMPLETE;
-import static slidenerd.vivz.bucketdrops.adapters.SortOptions.SHOW_INCOMPLETE;
-import static slidenerd.vivz.bucketdrops.adapters.SortOptions.SORT_ASCENDING_DATE;
-import static slidenerd.vivz.bucketdrops.adapters.SortOptions.SORT_DEFAULT;
-import static slidenerd.vivz.bucketdrops.adapters.SortOptions.SORT_DESCENDING_DATE;
-
 /**
  * Created by vivz on 18/07/15.
  */
-public class DropAdapter extends MutableRealmAdapter<Drop, RecyclerView.ViewHolder> {
+public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements OnSwipeListener {
+    public static final int ITEM = 1;
+    public static final int NO_ITEM = 2;
+    public static final int FOOTER = 3;
     private Context mContext;
-    private LayoutInflater mLayoutInflater;
-    //An object interested in processing events when the footer of this RecyclerView is clicked
+    private LayoutInflater mInflater;
     private FooterClickListener mFooterClickListener;
-    //An object interested in processing events when the AddDrop button of this RecyclerView is clicked
-    private ItemClickListener mItemClickListener;
+    private MarkListener mMarkListener;
     private Realm mRealm;
+    private RealmResults<Drop> mResults;
+    private int mSort;
 
-    public DropAdapter(Context context, Realm realm) {
-        super(realm);
+    public AdapterDrops(Context context, Realm realm, RealmResults<Drop> results) {
         mRealm = realm;
         mContext = context;
-        mLayoutInflater = LayoutInflater.from(context);
+        mInflater = LayoutInflater.from(context);
+        updateResults(results);
     }
 
-    public void setDropClickListener(ItemClickListener listener) {
-        mItemClickListener = listener;
+    public void updateResults(RealmResults<Drop> results) {
+        mResults = results;
+        mSort = BucketDropsApp.loadSortOption();
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public long getItemId(int position) {
+        if (mResults == null) {
+            return RecyclerView.NO_ID;
+        } else {
+            return mResults.get(position).getAdded();
+        }
+    }
+
+    public void setDropClickListener(MarkListener listener) {
+        mMarkListener = listener;
     }
 
     public void setOnFooterClickListener(FooterClickListener listener) {
         mFooterClickListener = listener;
     }
 
-    public RealmResults<Drop> getData(Realm realm) {
-        int sortOption = BucketDropsApp.loadSortOption();
-        RealmResults<Drop> realmResults = null;
-        if (sortOption == SHOW_COMPLETE) {
-
-            realmResults = realm.where(Drop.class).equalTo("completed", true).findAllAsync();
-        } else if (sortOption == SHOW_INCOMPLETE) {
-            realmResults = realm.where(Drop.class).equalTo("completed", false).findAllAsync();
-        } else if (sortOption == SORT_ASCENDING_DATE) {
-            realmResults = realm.where(Drop.class).findAllSortedAsync("when", true);
-        } else if (sortOption == SORT_DESCENDING_DATE) {
-            realmResults = realm.where(Drop.class).findAllSortedAsync("when", false);
-        } else {
-            realmResults = realm.where(Drop.class).findAllAsync();
-        }
-        if (realmResults == null || realmResults.isEmpty() && sortOption != SORT_DEFAULT) {
-            realmResults = realm.where(Drop.class).findAllAsync();
-        }
-        realmResults.addChangeListener(new RealmChangeListener() {
-            @Override
-            public void onChange() {
-                notifyDataSetChanged();
-            }
-        });
-        return realmResults;
-    }
-
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
         if (viewHolder instanceof DropHolder) {
             DropHolder dropHolder = (DropHolder) viewHolder;
-            Drop drop = getItem(position);
+            Drop drop = mResults.get(position);
             dropHolder.setWhat(drop.getWhat());
             dropHolder.setWhen(drop.getWhen());
             dropHolder.setBackground(drop.isCompleted());
         }
     }
 
+    /**
+     * Returns the total number of items in the data set hold by the adapter.
+     *
+     * @return The total number of items in this adapter.
+     */
+    @Override
+    public int getItemCount() {
+        if (mResults == null) {
+            return 0;
+        } else if (mResults.isEmpty()) {
+            if (mSort == SortOptions.SORT_DEFAULT) {
+                return 0;
+            } else {
+                return 2;
+            }
+        } else {
+            return mResults.size() + 1;
+        }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (mResults == null) {
+            return ITEM;
+        } else if (mResults.isEmpty()) {
+            if (mSort == SortOptions.SORT_DEFAULT) {
+                return ITEM;
+            } else {
+                if (position == 0) {
+                    return NO_ITEM;
+                } else {
+                    return FOOTER;
+                }
+            }
+        } else {
+            if (position < mResults.size()) {
+                return ITEM;
+            } else {
+                return FOOTER;
+            }
+        }
+    }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (viewType == ItemType.FOOTER.ordinal()) {
-            View root = mLayoutInflater.inflate(R.layout.footer, parent, false);
+        if (viewType == FOOTER) {
+            View root = mInflater.inflate(R.layout.footer, parent, false);
             FooterHolder viewHolder = new FooterHolder(root);
             return viewHolder;
 
+        } else if (viewType == NO_ITEM) {
+            View root = mInflater.inflate(R.layout.no_item, parent, false);
+            NoneHolder viewHolder = new NoneHolder(root);
+            return viewHolder;
         } else {
-            View root = mLayoutInflater.inflate(R.layout.item, parent, false);
+            View root = mInflater.inflate(R.layout.item, parent, false);
             DropHolder dropHolder = new DropHolder(root);
             return dropHolder;
         }
     }
 
-    @Override
-    public boolean hasHeader() {
-        return false;
-    }
-
-    @Override
-    public boolean hasFooter() {
-        return true;
-    }
-
     public void markComplete(int position) {
-        Drop drop = getItem(position);
+        if (position < mResults.size()) {
+            Drop drop = mResults.get(position);
+            mRealm.beginTransaction();
+            drop.setCompleted(true);
+            notifyItemChanged(position);
+            mRealm.commitTransaction();
+        }
+    }
+
+    /**
+     * @param position the position of the item that was swiped within the RecyclerView
+     */
+    @Override
+    public void onSwipe(int position) {
+        if (position < mResults.size()) {
+            mRealm.beginTransaction();
+            mResults.get(position).removeFromRealm();
+            mRealm.commitTransaction();
+            notifyItemRemoved(position);
+        }
+    }
+
+    public void add(Drop drop) {
         mRealm.beginTransaction();
-        drop.setCompleted(true);
-        notifyItemChanged(position);
+        mRealm.copyToRealmOrUpdate(drop);
         mRealm.commitTransaction();
+        notifyDataSetChanged();
     }
 
     /**
@@ -133,11 +176,18 @@ public class DropAdapter extends MutableRealmAdapter<Drop, RecyclerView.ViewHold
     /**
      * An interface that notifies your class when any item is clicked from your RecyclerView
      */
-    public interface ItemClickListener {
+    public interface MarkListener {
         /**
          * @param position is the position of the item that was clicked by the user inside the RecylerView
          */
-        void onClickDrop(int position);
+        void onMark(int position);
+    }
+
+    public class NoneHolder extends RecyclerView.ViewHolder {
+
+        public NoneHolder(View itemView) {
+            super(itemView);
+        }
     }
 
     public class DropHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -157,9 +207,9 @@ public class DropAdapter extends MutableRealmAdapter<Drop, RecyclerView.ViewHold
         @Override
         public void onClick(View v) {
 
-            if (mItemClickListener != null) {
+            if (mMarkListener != null) {
                 //Notify interested classes about the item that was clicked at the current position
-                mItemClickListener.onClickDrop(getAdapterPosition());
+                mMarkListener.onMark(getAdapterPosition());
             }
         }
 

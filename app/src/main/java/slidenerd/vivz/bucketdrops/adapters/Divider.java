@@ -63,8 +63,6 @@ public class Divider extends RecyclerView.ItemDecoration {
             //Draw dividers for all items that are not HEADER and FOOTER, all items usually have a ViewGroup as root in their layout, to ensure this works properly make sure either the header and footer don't use ViewGroup as their root or change the conditions here accordingly
             //Draw a divider below only if the current child is an instance of ViewGroup, in this app currently, the footer is a Button , hence it wont draw a divider below it
             if (child instanceof ViewGroup) {
-                final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child
-                        .getLayoutParams();
                 //the top of the divider
                 final int top = child.getTop();
                 //the bottom of the divider

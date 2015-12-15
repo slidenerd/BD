@@ -224,4 +224,16 @@ public class CustomDatePicker extends LinearLayout implements View.OnTouchListen
         }
     }
 
+    public int getDay() {
+        return mCurrentDay;
+    }
+
+    public int getMonth() {
+        return mCurrentMonth;
+    }
+
+    public int getYear() {
+        return mCurrentYear;
+    }
+
 }

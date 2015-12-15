@@ -6,8 +6,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
 
-import slidenerd.vivz.bucketdrops.adapters.RealmAdapter;
-
 public class BucketRecyclerView extends RecyclerView {
     /**
      * The View to display when the RecyclerView has no items at all
@@ -53,9 +51,8 @@ public class BucketRecyclerView extends RecyclerView {
     }
 
     private void checkIfEmpty() {
-        RealmAdapter adapter = (RealmAdapter) getAdapter();
-        if (adapter != null && mEmptyView != null && mToolbar != null) {
-            if (adapter.getCount() == 0) {
+        if (getAdapter() != null && mEmptyView != null && mToolbar != null) {
+            if (getAdapter().getItemCount() == 0) {
                 mEmptyView.setVisibility(View.VISIBLE);
                 BucketRecyclerView.this.setVisibility(View.GONE);
                 mToolbar.setVisibility(View.GONE);
@@ -72,10 +69,6 @@ public class BucketRecyclerView extends RecyclerView {
     @Override
     public void setAdapter(Adapter adapter) {
         super.setAdapter(adapter);
-
-        if (!(adapter instanceof RealmAdapter)) {
-            throw new IllegalArgumentException("Adapter must be a subclass of abstract realm adapter");
-        }
         if (adapter != null) {
             //Register an AdapterDataSetObserver to monitor the number of items in the RecyclerView whenever items are being added, removed
             adapter.registerAdapterDataObserver(mEmptyObserver);

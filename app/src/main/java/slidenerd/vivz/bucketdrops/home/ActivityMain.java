@@ -15,15 +15,17 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import io.realm.Realm;
+import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
+import io.realm.Sort;
 import slidenerd.vivz.bucketdrops.R;
 import slidenerd.vivz.bucketdrops.adapters.Divider;
-import slidenerd.vivz.bucketdrops.adapters.DropAdapter;
+import slidenerd.vivz.bucketdrops.adapters.AdapterDrops;
 import slidenerd.vivz.bucketdrops.adapters.OnAddDropListener;
 import slidenerd.vivz.bucketdrops.adapters.SimpleItemTouchHelperCallback;
 import slidenerd.vivz.bucketdrops.beans.Drop;
-import slidenerd.vivz.bucketdrops.widgets.BucketRecyclerView;
 import slidenerd.vivz.bucketdrops.extras.Util;
+import slidenerd.vivz.bucketdrops.widgets.BucketRecyclerView;
 
 import static slidenerd.vivz.bucketdrops.adapters.SortOptions.SHOW_COMPLETE;
 import static slidenerd.vivz.bucketdrops.adapters.SortOptions.SHOW_INCOMPLETE;
@@ -33,19 +35,21 @@ import static slidenerd.vivz.bucketdrops.adapters.SortOptions.SORT_DESCENDING_DA
 
 public class ActivityMain extends AppCompatActivity implements
         OnAddDropListener,
-        DropAdapter.FooterClickListener,
-        DropAdapter.ItemClickListener,
+        AdapterDrops.FooterClickListener,
+        AdapterDrops.MarkListener,
         DialogActions.ActionListener {
 
     private Realm mRealm;
+
+    private RealmResults<Drop> mResults;
     //The RecyclerView that displays all our items
     private BucketRecyclerView mRecycler;
-    private Button mBtnAddDrop;
+    private Button mBtnAdd;
     //The View to be displayed when the RecyclerView is empty.
-    private View mEmptyTodos;
+    private View mEmptyView;
     private Toolbar mToolbar;
-    private DropAdapter mAdapter;
-    private ImageView mImgBackground;
+    private AdapterDrops mAdapter;
+    private ImageView mBackground;
     //When the add item button is clicked, show a dialog that lets the person add a new item
     private View.OnClickListener mOnClickAddDropListener = new View.OnClickListener() {
         @Override
@@ -76,16 +80,24 @@ public class ActivityMain extends AppCompatActivity implements
 
     private void initRecycler() {
         mRecycler = (BucketRecyclerView) findViewById(R.id.recycler_tasks);
-        mBtnAddDrop = (Button) findViewById(R.id.btn_add_drop);
-        mEmptyTodos = findViewById(R.id.recycler_empty_view);
-        mBtnAddDrop.setOnClickListener(mOnClickAddDropListener);
-        mAdapter = new DropAdapter(this, mRealm);
+        mBtnAdd = (Button) findViewById(R.id.btn_add_drop);
+        mEmptyView = findViewById(R.id.recycler_empty_view);
+        mBtnAdd.setOnClickListener(mOnClickAddDropListener);
+        mResults = mRealm.where(Drop.class).findAllSortedAsync("when");
+        mAdapter = new AdapterDrops(this, mRealm, mResults);
+        mResults.addChangeListener(new RealmChangeListener() {
+            @Override
+            public void onChange() {
+                mAdapter.updateResults(mResults);
+                mResults.removeChangeListener(this);
+            }
+        });
         //Let our Activity handle the event when the footer is clicked from our RecyclerView
         mAdapter.setOnFooterClickListener(this);
         //Let our Activity handle the event when the Add Drop button is clicked from the empty view
         mAdapter.setDropClickListener(this);
         //Set an Empty View to be displayed when the RecyclerView has no items
-        mRecycler.setEmptyView(mEmptyTodos);
+        mRecycler.setEmptyView(mEmptyView);
 
         //hide the toolbar when the bucket is empty and show it when it has atleast one item in it
         mRecycler.setToolbar(mToolbar);
@@ -105,10 +117,10 @@ public class ActivityMain extends AppCompatActivity implements
     private void initBackgroundImage() {
         //Convert our background image to a specific size that suits our device's screen size
         //THIS HAPPENS ON THE UI THREAD WHICH IS A POSSIBLE AREA FOR IMPROVEMENT
-        mImgBackground = (ImageView) findViewById(R.id.img_background);
+        mBackground = (ImageView) findViewById(R.id.img_background);
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         Bitmap bitmapModified = Util.getScaledVersion(this, displayMetrics.widthPixels, displayMetrics.heightPixels);
-        mImgBackground.setImageBitmap(bitmapModified);
+        mBackground.setImageBitmap(bitmapModified);
     }
 
     @Override
@@ -124,42 +136,49 @@ public class ActivityMain extends AppCompatActivity implements
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        int sortOption = SORT_DEFAULT;
-        boolean needsReloading = false;
+        boolean handled = true;
         switch (id) {
             case R.id.action_add:
                 showDialogAdd();
                 break;
-            case R.id.action_show_completed:
-                sortOption = SHOW_COMPLETE;
-                needsReloading = true;
+            default:
+                handled = false;
                 break;
-            case R.id.action_show_uncompleted:
-                sortOption = SHOW_INCOMPLETE;
-                needsReloading = true;
-                break;
-            case R.id.action_sort_ascending_date:
-                sortOption = SORT_DESCENDING_DATE;
-                needsReloading = true;
-                break;
-            case R.id.action_sort_descending_date:
-                sortOption = SORT_ASCENDING_DATE;
-                needsReloading = true;
-                break;
+        }
+        final RealmResults<Drop> results;
+        int sortOption = SORT_DEFAULT;
+        if (id == R.id.action_show_completed) {
+            sortOption = SHOW_COMPLETE;
+            results = mRealm.where(Drop.class).equalTo("completed", true).findAllAsync();
+        } else if (id == R.id.action_show_uncompleted) {
+            sortOption = SHOW_INCOMPLETE;
+            results = mRealm.where(Drop.class).equalTo("completed", false).findAllAsync();
+        } else if (id == R.id.action_sort_ascending_date) {
+            sortOption = SORT_DESCENDING_DATE;
+            results = mRealm.where(Drop.class).findAllSortedAsync("when", Sort.ASCENDING);
+        } else if (id == R.id.action_sort_descending_date) {
+            sortOption = SORT_ASCENDING_DATE;
+            results = mRealm.where(Drop.class).findAllSortedAsync("when", Sort.DESCENDING);
+        } else {
+            results = mRealm.where(Drop.class).findAllAsync();
         }
         BucketDropsApp.storeSortOption(sortOption);
-        if (needsReloading) {
-            RealmResults<Drop> realmResults = mAdapter.getData(mRealm);
-            mAdapter.setData(realmResults);
-        }
-        return super.onOptionsItemSelected(item);
+        final int finalSortOption = sortOption;
+        results.addChangeListener(new RealmChangeListener() {
+            @Override
+            public void onChange() {
+                mAdapter.updateResults(results);
+                results.removeChangeListener(this);
+            }
+        });
+
+        return handled;
     }
 
     @Override
     public void onClickAddDrop(Drop drop) {
-        mAdapter.add(drop, true);
+        mAdapter.add(drop);
     }
-
 
     @Override
     public void onClickFooter() {
@@ -167,7 +186,7 @@ public class ActivityMain extends AppCompatActivity implements
     }
 
     @Override
-    public void onClickDrop(int position) {
+    public void onMark(int position) {
         //Launch the DialogActions which are shown when the user clicks on some item from our RecyclerView
         Bundle arguments = new Bundle();
         arguments.putInt(DialogActions.ActionListener.POSITION, position);
