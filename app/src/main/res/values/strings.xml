@@ -10,6 +10,8 @@
     <string name="action_sort_descending_date">Sort by deadline most time left</string>
     <string name="action_show_completed">Show completed</string>
     <string name="action_show_uncompleted">Show uncompleted</string>
+    <string name="message_today">Right Today? Are You Serious!</string>
+    <string name="notification_added">"You added this item on "</string>
 
     <string-array name="months">
         <item>JAN</item>

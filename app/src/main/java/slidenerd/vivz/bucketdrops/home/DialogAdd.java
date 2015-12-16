@@ -17,22 +17,21 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.Locale;
 
 import slidenerd.vivz.bucketdrops.R;
-import slidenerd.vivz.bucketdrops.adapters.OnAddDropListener;
+import slidenerd.vivz.bucketdrops.adapters.OnAddListener;
 import slidenerd.vivz.bucketdrops.beans.Drop;
 import slidenerd.vivz.bucketdrops.extras.Util;
 import slidenerd.vivz.bucketdrops.widgets.CustomDatePicker;
 
 
-public class DialogAdd extends DialogFragment implements View.OnClickListener, TextView.OnEditorActionListener {
+public class DialogAdd extends DialogFragment
+        implements TextView.OnEditorActionListener {
 
     private Activity mContext;
     //Title of the dialog
-    private TextView mTextTitle;
+    private TextView mTitle;
     //The close button for this dialog
     private ImageButton mBtnClose;
     //The area where the user can type his/her goal
@@ -40,12 +39,24 @@ public class DialogAdd extends DialogFragment implements View.OnClickListener, T
     //The control with which user can select the date for his/her goal by which they feel they wanna accomplish their goal
     private CustomDatePicker mInputWhen;
     //The button clicking which the goal and date will be added to the database
-    private Button mBtnAddDrop;
+    private Button mBtnAdd;
     //The object which will be notified when the user hits the "Add Drop" button
-    private OnAddDropListener mOnAddDropListener;
+    private OnAddListener mListener;
 
-    public void setAddDropListener(OnAddDropListener OnAddDropListener) {
-        mOnAddDropListener = OnAddDropListener;
+    private View.OnClickListener mBtnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.btn_add:
+                    addAction();
+                    break;
+            }
+            dismiss();
+        }
+    };
+
+    public void setOnAddListener(OnAddListener listener) {
+        mListener = listener;
     }
 
 
@@ -70,19 +81,7 @@ public class DialogAdd extends DialogFragment implements View.OnClickListener, T
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initViews(view);
-        //init the date picker
-        initDatePicker(view);
-        //monitor the user clicking buttons such as DONE on the virtual keyboard
-        mInputWhat.setOnEditorActionListener(this);
-        mBtnClose.setOnClickListener(this);
-        mBtnAddDrop.setOnClickListener(this);
-        //load custom fonts wherever appropriate
-        initCustomFont();
-    }
-
-    private void initViews(View view) {
-        mTextTitle = (TextView) view.findViewById(R.id.text_dialog_title);
+        mTitle = (TextView) view.findViewById(R.id.text_dialog_title);
         //The close button for this dialog
         mBtnClose = (ImageButton) view.findViewById(R.id.btn_dialog_close);
         //The area where the user can type his/her goal
@@ -90,35 +89,24 @@ public class DialogAdd extends DialogFragment implements View.OnClickListener, T
         //The control with which user can select the date for his/her goal by which they feel they wanna accomplish their goal
         mInputWhen = (CustomDatePicker) view.findViewById(R.id.input_time);
         //The button clicking which the goal and date will be added to the database
-        mBtnAddDrop = (Button) view.findViewById(R.id.btn_add_drop);
+        mBtnAdd = (Button) view.findViewById(R.id.btn_add);
+        //monitor the user clicking buttons such as DONE on the virtual keyboard
+        mInputWhat.setOnEditorActionListener(this);
+        mBtnClose.setOnClickListener(mBtnClickListener);
+        mBtnAdd.setOnClickListener(mBtnClickListener);
+        //load custom fonts wherever appropriate
+        initCustomFont();
     }
 
-
-    private void initDatePicker(View view) {
-        Calendar calendar = Calendar.getInstance(Locale.getDefault());
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-    }
 
     private void initCustomFont() {
-        mTextTitle.setTypeface(Util.loadRalewayRegular(mContext));
+        mTitle.setTypeface(Util.loadRalewayRegular(mContext));
         mInputWhat.setTypeface(Util.loadRalewayThin(mContext));
-        mBtnAddDrop.setTypeface(Util.loadRalewayThin(mContext));
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_add_drop:
-                addAction();
-                break;
-        }
-        dismiss();
+        mBtnAdd.setTypeface(Util.loadRalewayThin(mContext));
     }
 
     private void addAction() {
-        if (mOnAddDropListener != null) {
+        if (mListener != null) {
             //Load the taskname, convert the user entered date to a specific value of 0 hours 0 minutes and 0 seconds, 12 am precisely on the day they want things to be done
             String taskName = mInputWhat.getText().toString();
 
@@ -129,10 +117,10 @@ public class DialogAdd extends DialogFragment implements View.OnClickListener, T
             long currentTime = System.currentTimeMillis();
             long when = gregorianCalendar.getTimeInMillis();
             if (when < currentTime) {
-                Toast.makeText(getActivity(), "Right Today? Are You Serious!", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), R.string.message_today, Toast.LENGTH_LONG).show();
             } else {
                 Drop drop = new Drop(taskName, System.currentTimeMillis(), when, false);
-                mOnAddDropListener.onClickAddDrop(drop);
+                mListener.onAdd(drop);
             }
         }
     }

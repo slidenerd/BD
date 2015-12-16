@@ -1,10 +1,12 @@
-package slidenerd.vivz.bucketdrops.adapters;
+package slidenerd.vivz.bucketdrops.extras;
 
 /**
- * Created by vivz on 20/07/15.
+ * Created by vivz on 15/12/15.
  */
-
-public interface SortOptions {
+public interface Constants {
+    String COMPLETED = "completed";
+    String WHEN = "when";
+    String POSITION = "position";
     String KEY = "sort_option";
     //The order in which the user added items to the bucket
     int SORT_DEFAULT = 0;

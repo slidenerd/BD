@@ -23,7 +23,7 @@
             android:exported="false"></service>
 
         <receiver
-            android:name=".receivers.AutoStartReceiver"
+            android:name=".receivers.BootReceiver"
             android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

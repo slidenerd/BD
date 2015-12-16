@@ -19,6 +19,8 @@ import slidenerd.vivz.bucketdrops.beans.Drop;
 import slidenerd.vivz.bucketdrops.extras.Util;
 import slidenerd.vivz.bucketdrops.home.BucketDropsApp;
 
+import static slidenerd.vivz.bucketdrops.extras.Constants.SORT_DEFAULT;
+
 /**
  * Created by vivz on 18/07/15.
  */
@@ -28,7 +30,7 @@ public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public static final int FOOTER = 3;
     private Context mContext;
     private LayoutInflater mInflater;
-    private FooterClickListener mFooterClickListener;
+    private AddListener mAddListener;
     private MarkListener mMarkListener;
     private Realm mRealm;
     private RealmResults<Drop> mResults;
@@ -56,23 +58,12 @@ public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
     }
 
-    public void setDropClickListener(MarkListener listener) {
+    public void setMarkListener(MarkListener listener) {
         mMarkListener = listener;
     }
 
-    public void setOnFooterClickListener(FooterClickListener listener) {
-        mFooterClickListener = listener;
-    }
-
-    @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
-        if (viewHolder instanceof DropHolder) {
-            DropHolder dropHolder = (DropHolder) viewHolder;
-            Drop drop = mResults.get(position);
-            dropHolder.setWhat(drop.getWhat());
-            dropHolder.setWhen(drop.getWhen());
-            dropHolder.setBackground(drop.isCompleted());
-        }
+    public void setAddListener(AddListener listener) {
+        mAddListener = listener;
     }
 
     /**
@@ -85,7 +76,7 @@ public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         if (mResults == null) {
             return 0;
         } else if (mResults.isEmpty()) {
-            if (mSort == SortOptions.SORT_DEFAULT) {
+            if (mSort == SORT_DEFAULT) {
                 return 0;
             } else {
                 return 2;
@@ -100,7 +91,7 @@ public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         if (mResults == null) {
             return ITEM;
         } else if (mResults.isEmpty()) {
-            if (mSort == SortOptions.SORT_DEFAULT) {
+            if (mSort == SORT_DEFAULT) {
                 return ITEM;
             } else {
                 if (position == 0) {
@@ -127,12 +118,33 @@ public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         } else if (viewType == NO_ITEM) {
             View root = mInflater.inflate(R.layout.no_item, parent, false);
-            NoneHolder viewHolder = new NoneHolder(root);
+            NoItemsHolder viewHolder = new NoItemsHolder(root);
             return viewHolder;
         } else {
             View root = mInflater.inflate(R.layout.item, parent, false);
             DropHolder dropHolder = new DropHolder(root);
             return dropHolder;
+        }
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int position) {
+        if (viewHolder instanceof DropHolder) {
+            DropHolder dropHolder = (DropHolder) viewHolder;
+            Drop drop = mResults.get(position);
+            dropHolder.setWhat(drop.getWhat());
+            dropHolder.setWhen(drop.getWhen());
+            dropHolder.setBackground(drop.isCompleted());
+        } else if (viewHolder instanceof FooterHolder) {
+            FooterHolder footerHolder = (FooterHolder) viewHolder;
+            footerHolder.mBtnAdd.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mAddListener != null) {
+                        mAddListener.add();
+                    }
+                }
+            });
         }
     }
 
@@ -167,13 +179,6 @@ public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     /**
-     * An interface that notifies your class when the footer is clicked inside the RecyclerView through its onClickFooter method
-     */
-    public interface FooterClickListener {
-        void onClickFooter();
-    }
-
-    /**
      * An interface that notifies your class when any item is clicked from your RecyclerView
      */
     public interface MarkListener {
@@ -183,9 +188,9 @@ public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         void onMark(int position);
     }
 
-    public class NoneHolder extends RecyclerView.ViewHolder {
+    public class NoItemsHolder extends RecyclerView.ViewHolder {
 
-        public NoneHolder(View itemView) {
+        public NoItemsHolder(View itemView) {
             super(itemView);
         }
     }
@@ -238,23 +243,13 @@ public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
     }
 
-    public class FooterHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private Button mBtnAddDrop;
+    public class FooterHolder extends RecyclerView.ViewHolder {
+        private Button mBtnAdd;
 
         public FooterHolder(View itemView) {
             super(itemView);
-            mBtnAddDrop = (Button) itemView.findViewById(R.id.btn_add_drop);
-            mBtnAddDrop.setTypeface(Util.loadRalewayThin(mContext));
-            mBtnAddDrop.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View v) {
-
-            if (mFooterClickListener != null) {
-                //Notify interested classes about the footer that was clicked at the specified position.
-                mFooterClickListener.onClickFooter();
-            }
+            mBtnAdd = (Button) itemView.findViewById(R.id.btn_add);
+            mBtnAdd.setTypeface(Util.loadRalewayThin(mContext));
         }
     }
 }

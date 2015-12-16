@@ -6,6 +6,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
 
+
 public class BucketRecyclerView extends RecyclerView {
     /**
      * The View to display when the RecyclerView has no items at all

@@ -3,11 +3,11 @@ package slidenerd.vivz.bucketdrops.adapters;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 
-public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
+public class SimpleTouchCallback extends ItemTouchHelper.Callback {
 
     private final OnSwipeListener mSwipeListener;
 
-    public SimpleItemTouchHelperCallback(OnSwipeListener adapter) {
+    public SimpleTouchCallback(OnSwipeListener adapter) {
         mSwipeListener = adapter;
     }
 

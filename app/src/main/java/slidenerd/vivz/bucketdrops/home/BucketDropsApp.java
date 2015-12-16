@@ -6,7 +6,9 @@ import android.preference.PreferenceManager;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
-import slidenerd.vivz.bucketdrops.adapters.SortOptions;
+
+import static slidenerd.vivz.bucketdrops.extras.Constants.KEY;
+import static slidenerd.vivz.bucketdrops.extras.Constants.SORT_DEFAULT;
 
 /**
  * Created by vivz on 23/09/15.
@@ -16,11 +18,11 @@ public class BucketDropsApp extends Application {
     private static SharedPreferences mPreferences;
 
     public static void storeSortOption(int sortOption) {
-        mPreferences.edit().putInt(SortOptions.KEY, sortOption).apply();
+        mPreferences.edit().putInt(KEY, sortOption).apply();
     }
 
     public static int loadSortOption() {
-        return mPreferences.getInt(SortOptions.KEY, SortOptions.SORT_DEFAULT);
+        return mPreferences.getInt(KEY, SORT_DEFAULT);
     }
 
     @Override

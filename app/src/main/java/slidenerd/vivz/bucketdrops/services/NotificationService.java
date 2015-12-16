@@ -11,6 +11,8 @@ import slidenerd.vivz.bucketdrops.R;
 import slidenerd.vivz.bucketdrops.beans.Drop;
 import slidenerd.vivz.bucketdrops.extras.Util;
 
+import static slidenerd.vivz.bucketdrops.extras.Constants.COMPLETED;
+
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
  * a service on a separate handler thread.
@@ -20,9 +22,10 @@ import slidenerd.vivz.bucketdrops.extras.Util;
  */
 public class NotificationService extends IntentService {
 
+    public static final String NAME = "Bucket Drops Notification Service";
 
     public NotificationService() {
-        super("NotificationService");
+        super(NAME);
     }
 
     @Override
@@ -41,7 +44,7 @@ public class NotificationService extends IntentService {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
-            RealmResults<Drop> realmResults = realm.where(Drop.class).equalTo("completed", false).findAll();
+            RealmResults<Drop> realmResults = realm.where(Drop.class).equalTo(COMPLETED, false).findAll();
             long now = System.currentTimeMillis();
             for (final Drop current : realmResults) {
 
@@ -75,7 +78,7 @@ public class NotificationService extends IntentService {
         PugNotification.with(this)
                 .load()
                 .title(drop.getWhat())
-                .message("You added this item on " + Util.getFormattedDate(drop.getWhen()))
+                .message(getString(R.string.notification_added) + Util.getFormattedDate(drop.getWhen()))
                 .smallIcon(R.drawable.pugnotification_ic_launcher)
                 .largeIcon(R.drawable.pugnotification_ic_launcher)
                 .simple()

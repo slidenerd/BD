@@ -17,7 +17,7 @@
             android:src="@drawable/logo" />
 
         <Button
-            android:id="@+id/btn_add_drop"
+            android:id="@+id/btn_add"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/img_logo"
