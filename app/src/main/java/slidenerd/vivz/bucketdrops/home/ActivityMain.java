@@ -33,7 +33,6 @@ import static slidenerd.vivz.bucketdrops.extras.Constants.POSITION;
 import static slidenerd.vivz.bucketdrops.extras.Constants.SHOW_COMPLETE;
 import static slidenerd.vivz.bucketdrops.extras.Constants.SHOW_INCOMPLETE;
 import static slidenerd.vivz.bucketdrops.extras.Constants.SORT_ASCENDING_DATE;
-import static slidenerd.vivz.bucketdrops.extras.Constants.SORT_DEFAULT;
 import static slidenerd.vivz.bucketdrops.extras.Constants.SORT_DESCENDING_DATE;
 import static slidenerd.vivz.bucketdrops.extras.Constants.WHEN;
 
@@ -177,7 +176,7 @@ public class ActivityMain extends AppCompatActivity {
                 handled = false;
                 break;
         }
-        int sortOption = SORT_DEFAULT;
+        int sortOption = SORT_ASCENDING_DATE;
         if (id == R.id.action_show_completed) {
             sortOption = SHOW_COMPLETE;
             mResults = mRealm.where(Drop.class).equalTo(COMPLETED, true).findAllAsync();

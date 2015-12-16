@@ -19,7 +19,7 @@ import slidenerd.vivz.bucketdrops.beans.Drop;
 import slidenerd.vivz.bucketdrops.extras.Util;
 import slidenerd.vivz.bucketdrops.home.BucketDropsApp;
 
-import static slidenerd.vivz.bucketdrops.extras.Constants.SORT_DEFAULT;
+import static slidenerd.vivz.bucketdrops.extras.Constants.SORT_ASCENDING_DATE;
 
 /**
  * Created by vivz on 18/07/15.
@@ -76,7 +76,7 @@ public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         if (mResults == null) {
             return 0;
         } else if (mResults.isEmpty()) {
-            if (mSort == SORT_DEFAULT) {
+            if (mSort == SORT_ASCENDING_DATE) {
                 return 0;
             } else {
                 return 2;
@@ -91,7 +91,7 @@ public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         if (mResults == null) {
             return ITEM;
         } else if (mResults.isEmpty()) {
-            if (mSort == SORT_DEFAULT) {
+            if (mSort == SORT_ASCENDING_DATE) {
                 return ITEM;
             } else {
                 if (position == 0) {
@@ -167,7 +167,12 @@ public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             mRealm.beginTransaction();
             mResults.get(position).removeFromRealm();
             mRealm.commitTransaction();
-            notifyItemRemoved(position);
+            notifyDataSetChanged();
+        }
+        if (mResults.isEmpty() && mSort != SORT_ASCENDING_DATE) {
+            mSort = SORT_ASCENDING_DATE;
+            BucketDropsApp.storeSortOption(mSort);
+            notifyDataSetChanged();
         }
     }
 

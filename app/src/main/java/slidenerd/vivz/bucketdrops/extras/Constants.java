@@ -8,8 +8,6 @@ public interface Constants {
     String WHEN = "when";
     String POSITION = "position";
     String KEY = "sort_option";
-    //The order in which the user added items to the bucket
-    int SORT_DEFAULT = 0;
     //The items whose target completion date is the nearest
     int SORT_ASCENDING_DATE = 1;
     //The items whose target completion date is the farthest

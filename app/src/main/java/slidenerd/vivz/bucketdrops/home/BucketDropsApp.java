@@ -8,7 +8,7 @@ import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
 import static slidenerd.vivz.bucketdrops.extras.Constants.KEY;
-import static slidenerd.vivz.bucketdrops.extras.Constants.SORT_DEFAULT;
+import static slidenerd.vivz.bucketdrops.extras.Constants.SORT_ASCENDING_DATE;
 
 /**
  * Created by vivz on 23/09/15.
@@ -22,7 +22,7 @@ public class BucketDropsApp extends Application {
     }
 
     public static int loadSortOption() {
-        return mPreferences.getInt(KEY, SORT_DEFAULT);
+        return mPreferences.getInt(KEY, SORT_ASCENDING_DATE);
     }
 
     @Override
