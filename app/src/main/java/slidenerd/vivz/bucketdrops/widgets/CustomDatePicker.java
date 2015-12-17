@@ -25,9 +25,11 @@ import slidenerd.vivz.bucketdrops.extras.Util;
 
 /**
  * Created by vivz on 26/10/15.
+ * TODO handle long click
  */
 public class CustomDatePicker extends LinearLayout implements View.OnTouchListener {
 
+    public static final String TAG = "VIVZ";
     public static final int TOP = 1;
     public static final int BOTTOM = 3;
 
@@ -51,6 +53,8 @@ public class CustomDatePicker extends LinearLayout implements View.OnTouchListen
     private int mCurrentYear;
     private int mCurrentDay;
     private int mCurrentMonth;
+    private boolean topHit = false;
+    private boolean bottomHit = false;
 
     public CustomDatePicker(Context context) {
         super(context);
@@ -113,8 +117,6 @@ public class CustomDatePicker extends LinearLayout implements View.OnTouchListen
         } catch (ParseException e) {
             Log.d("VIVZ", "parsing error");
         }
-
-
     }
 
     @Override
@@ -138,27 +140,41 @@ public class CustomDatePicker extends LinearLayout implements View.OnTouchListen
         Rect bottomBounds = mCompoundDrawables[BOTTOM].getBounds();
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-            case MotionEvent.ACTION_MOVE:
-                if (event.getRawY() < point[1] + topBounds.height()) {
+                if (isTopHit(event, topBounds)) {
                     // your action for drawable click event
+                    topHit = true;
                     toggleDrawable(textView, TOP, true);
                 }
-                if (event.getRawY() > point[1] + textView.getHeight() - bottomBounds.height()) {
+                if (isBottomHit(textView, event, bottomBounds)) {
+                    bottomHit = true;
                     toggleDrawable(textView, BOTTOM, true);
                 }
+                Log.d(TAG, "processEventsFor: action down");
                 break;
             case MotionEvent.ACTION_UP:
-                if (event.getRawY() < point[1] + topBounds.height()) {
-                    // your action for drawable click event
-                    toggleDrawable(textView, TOP, false);
+            case MotionEvent.ACTION_CANCEL:
+                // your action for drawable click event
+                toggleDrawable(textView, TOP, false);
+                toggleDrawable(textView, BOTTOM, false);
+                if (topHit) {
                     increment(quantity);
                 }
-                if (event.getRawY() > point[1] + textView.getHeight() - bottomBounds.height()) {
-                    toggleDrawable(textView, BOTTOM, false);
+                if (bottomHit) {
                     decrement(quantity);
                 }
+                topHit = false;
+                bottomHit = false;
+                Log.d(TAG, "processEventsFor: action up");
                 break;
         }
+    }
+
+    private boolean isBottomHit(TextView textView, MotionEvent event, Rect bottomBounds) {
+        return event.getRawY() > point[1] + textView.getHeight() - bottomBounds.height();
+    }
+
+    private boolean isTopHit(MotionEvent event, Rect topBounds) {
+        return event.getRawY() < point[1] + topBounds.height();
     }
 
     private void increment(int quantity) {

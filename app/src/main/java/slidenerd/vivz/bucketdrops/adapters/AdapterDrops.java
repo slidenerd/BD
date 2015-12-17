@@ -76,11 +76,7 @@ public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         if (mResults == null) {
             return 0;
         } else if (mResults.isEmpty()) {
-            if (mSort == SORT_ASCENDING_DATE) {
-                return 0;
-            } else {
-                return 2;
-            }
+            return mSort == SORT_ASCENDING_DATE ? 0 : 2;
         } else {
             return mResults.size() + 1;
         }
