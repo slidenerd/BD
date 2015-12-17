@@ -7,6 +7,8 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,21 +27,19 @@ import slidenerd.vivz.bucketdrops.extras.Util;
 
 /**
  * Created by vivz on 26/10/15.
- * TODO handle long click
+ * TODO save state on rotation
  */
 public class CustomDatePicker extends LinearLayout implements View.OnTouchListener {
 
-    public static final String TAG = "VIVZ";
     public static final int TOP = 1;
     public static final int BOTTOM = 3;
 
     public static final int DAY = 0;
     public static final int MONTH = 1;
     public static final int YEAR = 2;
-
+    public static final int MESSAGE_CHECK_BTN_STILL_PRESSED = 1;
     private SimpleDateFormat mFormatter;
     private Calendar mCalendar;
-
     private String[] mMonthNames;
     private Context mContext;
     private TextView mTextMonth;
@@ -48,13 +48,32 @@ public class CustomDatePicker extends LinearLayout implements View.OnTouchListen
     private Typeface mTypeface;
     private int[] point = new int[2];
     private Drawable[] mCompoundDrawables = new Drawable[4];
-
     private String mCurrentDate;
     private int mCurrentYear;
     private int mCurrentDay;
     private int mCurrentMonth;
-    private boolean topHit = false;
-    private boolean bottomHit = false;
+    private boolean mIncrement = false;
+    private boolean mDecrement = false;
+    private int mQuantity;
+    public final Handler mHandler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            switch (msg.what) {
+                case MESSAGE_CHECK_BTN_STILL_PRESSED:
+                    if (mIncrement) {
+                        increment(mQuantity);
+                    }
+                    if (mDecrement) {
+                        decrement(mQuantity);
+                    }
+                    if (mIncrement || mDecrement) {
+                        mHandler.sendEmptyMessageDelayed(MESSAGE_CHECK_BTN_STILL_PRESSED, 250);
+                    }
+                    break;
+            }
+            return true;
+        }
+    });
 
     public CustomDatePicker(Context context) {
         super(context);
@@ -122,12 +141,15 @@ public class CustomDatePicker extends LinearLayout implements View.OnTouchListen
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         if (v.getId() == R.id.date_display) {
+            mQuantity = DAY;
             processEventsFor(mTextDay, event, DAY);
         }
         if (v.getId() == R.id.month_display) {
+            mQuantity = MONTH;
             processEventsFor(mTextMonth, event, MONTH);
         }
         if (v.getId() == R.id.year_display) {
+            mQuantity = YEAR;
             processEventsFor(mTextYear, event, YEAR);
         }
         return true;
@@ -142,29 +164,29 @@ public class CustomDatePicker extends LinearLayout implements View.OnTouchListen
             case MotionEvent.ACTION_DOWN:
                 if (isTopHit(event, topBounds)) {
                     // your action for drawable click event
-                    topHit = true;
+                    mIncrement = true;
                     toggleDrawable(textView, TOP, true);
                 }
                 if (isBottomHit(textView, event, bottomBounds)) {
-                    bottomHit = true;
+                    mDecrement = true;
                     toggleDrawable(textView, BOTTOM, true);
                 }
-                Log.d(TAG, "processEventsFor: action down");
+                if (mIncrement) {
+                    increment(quantity);
+                }
+                if (mDecrement) {
+                    decrement(quantity);
+                }
+                mHandler.sendEmptyMessageDelayed(MESSAGE_CHECK_BTN_STILL_PRESSED, 250);
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
                 // your action for drawable click event
                 toggleDrawable(textView, TOP, false);
                 toggleDrawable(textView, BOTTOM, false);
-                if (topHit) {
-                    increment(quantity);
-                }
-                if (bottomHit) {
-                    decrement(quantity);
-                }
-                topHit = false;
-                bottomHit = false;
-                Log.d(TAG, "processEventsFor: action up");
+                mIncrement = false;
+                mDecrement = false;
+                textView.setTag(null);
                 break;
         }
     }
