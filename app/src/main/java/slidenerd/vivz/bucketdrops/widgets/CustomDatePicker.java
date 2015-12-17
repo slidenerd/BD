@@ -7,8 +7,10 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,24 +33,18 @@ import slidenerd.vivz.bucketdrops.extras.Util;
  */
 public class CustomDatePicker extends LinearLayout implements View.OnTouchListener {
 
+    public static final int DELAY = 150;
     public static final int TOP = 1;
     public static final int BOTTOM = 3;
-
     public static final int DAY = 0;
     public static final int MONTH = 1;
     public static final int YEAR = 2;
     public static final int MESSAGE_CHECK_BTN_STILL_PRESSED = 1;
-    private SimpleDateFormat mFormatter;
+    private SimpleDateFormat mFormatter = new SimpleDateFormat();
     private Calendar mCalendar;
-    private String[] mMonthNames;
-    private Context mContext;
     private TextView mTextMonth;
     private TextView mTextDay;
     private TextView mTextYear;
-    private Typeface mTypeface;
-    private int[] point = new int[2];
-    private Drawable[] mCompoundDrawables = new Drawable[4];
-    private String mCurrentDate;
     private int mCurrentYear;
     private int mCurrentDay;
     private int mCurrentMonth;
@@ -67,7 +63,7 @@ public class CustomDatePicker extends LinearLayout implements View.OnTouchListen
                         decrement(mQuantity);
                     }
                     if (mIncrement || mDecrement) {
-                        mHandler.sendEmptyMessageDelayed(MESSAGE_CHECK_BTN_STILL_PRESSED, 250);
+                        mHandler.sendEmptyMessageDelayed(MESSAGE_CHECK_BTN_STILL_PRESSED, DELAY);
                     }
                     break;
             }
@@ -97,37 +93,30 @@ public class CustomDatePicker extends LinearLayout implements View.OnTouchListen
     }
 
     public void init(Context context) {
-        mContext = context;
-        mMonthNames = getResources().getStringArray(R.array.months);
-        mTypeface = Typeface.createFromAsset(mContext.getAssets(), "fonts/raleway_thin.ttf");
-        mFormatter = new SimpleDateFormat("yyyy-MM-dd");
-        mCalendar = Calendar.getInstance();
-    }
+        Typeface typeface = Typeface.createFromAsset(context.getAssets(), "fonts/raleway_thin.ttf");
 
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        LayoutInflater layoutInflater = LayoutInflater.from(mContext);
+        mCalendar = Calendar.getInstance();
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
         View view = layoutInflater.inflate(R.layout.custom_date_picker, this);
         mTextDay = (TextView) view.findViewById(R.id.date_display);
         mTextMonth = (TextView) view.findViewById(R.id.month_display);
         mTextYear = (TextView) view.findViewById(R.id.year_display);
 
-        mTextDay.setTypeface(mTypeface);
-        mTextMonth.setTypeface(mTypeface);
-        mTextYear.setTypeface(mTypeface);
+        mTextDay.setTypeface(typeface);
+        mTextMonth.setTypeface(typeface);
+        mTextYear.setTypeface(typeface);
 
         try {
             mCurrentYear = mCalendar.get(Calendar.YEAR);
             mCurrentMonth = mCalendar.get(Calendar.MONTH);
             mCurrentDay = mCalendar.get(Calendar.DATE);
 
-            Log.d("VIVZ", mCurrentMonth + "");
-            mCurrentDate = mCurrentYear + "-" + (mCurrentMonth + 1) + "-" + mCurrentDay;
-            mCalendar.setTime(mFormatter.parse(mCurrentDate));
-            Log.d("VIVZ", mCalendar.getTime().toString());
+            String today = mCurrentYear + "-" + (mCurrentMonth + 1) + "-" + mCurrentDay;
+            mFormatter.applyLocalizedPattern("yyyy-MM-dd");
+            mCalendar.setTime(mFormatter.parse(today));
             mTextYear.setText(mCurrentYear + "");
-            mTextMonth.setText(mMonthNames[mCurrentMonth]);
+            mFormatter.applyLocalizedPattern("MMM");
+            mTextMonth.setText(mFormatter.format(mCalendar.getTime()).toUpperCase());
             mTextDay.setText(mCurrentDay + "");
 
             mTextDay.setOnTouchListener(this);
@@ -136,6 +125,28 @@ public class CustomDatePicker extends LinearLayout implements View.OnTouchListen
         } catch (ParseException e) {
             Log.d("VIVZ", "parsing error");
         }
+    }
+
+    @Override
+    public Parcelable onSaveInstanceState() {
+
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("instanceState", super.onSaveInstanceState());
+//        bundle.putInt("stateToSave", this.stateToSave);
+        // ... save everything
+        return bundle;
+    }
+
+    @Override
+    public void onRestoreInstanceState(Parcelable state) {
+
+        if (state instanceof Bundle) {
+            Bundle bundle = (Bundle) state;
+//            this.stateToSave = bundle.getInt("stateToSave");
+            // ... load everything
+            state = bundle.getParcelable("instanceState");
+        }
+        super.onRestoreInstanceState(state);
     }
 
     @Override
@@ -156,18 +167,19 @@ public class CustomDatePicker extends LinearLayout implements View.OnTouchListen
     }
 
     public void processEventsFor(TextView textView, MotionEvent event, int quantity) {
-        textView.getLocationInWindow(point);
-        mCompoundDrawables = textView.getCompoundDrawables();
-        Rect topBounds = mCompoundDrawables[TOP].getBounds();
-        Rect bottomBounds = mCompoundDrawables[BOTTOM].getBounds();
+        int[] points = new int[2];
+        textView.getLocationInWindow(points);
+        Drawable[] drawables = textView.getCompoundDrawables();
+        Rect topBounds = drawables[TOP].getBounds();
+        Rect bottomBounds = drawables[BOTTOM].getBounds();
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                if (isTopHit(event, topBounds)) {
+                if (isTopHit(event, points, topBounds)) {
                     // your action for drawable click event
                     mIncrement = true;
                     toggleDrawable(textView, TOP, true);
                 }
-                if (isBottomHit(textView, event, bottomBounds)) {
+                if (isBottomHit(textView, event, points, bottomBounds)) {
                     mDecrement = true;
                     toggleDrawable(textView, BOTTOM, true);
                 }
@@ -177,7 +189,7 @@ public class CustomDatePicker extends LinearLayout implements View.OnTouchListen
                 if (mDecrement) {
                     decrement(quantity);
                 }
-                mHandler.sendEmptyMessageDelayed(MESSAGE_CHECK_BTN_STILL_PRESSED, 250);
+                mHandler.sendEmptyMessageDelayed(MESSAGE_CHECK_BTN_STILL_PRESSED, DELAY);
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
@@ -186,17 +198,16 @@ public class CustomDatePicker extends LinearLayout implements View.OnTouchListen
                 toggleDrawable(textView, BOTTOM, false);
                 mIncrement = false;
                 mDecrement = false;
-                textView.setTag(null);
                 break;
         }
     }
 
-    private boolean isBottomHit(TextView textView, MotionEvent event, Rect bottomBounds) {
-        return event.getRawY() > point[1] + textView.getHeight() - bottomBounds.height();
+    private boolean isBottomHit(TextView textView, MotionEvent event, int[] points, Rect bottomBounds) {
+        return event.getRawY() > points[1] + textView.getHeight() - bottomBounds.height();
     }
 
-    private boolean isTopHit(MotionEvent event, Rect topBounds) {
-        return event.getRawY() < point[1] + topBounds.height();
+    private boolean isTopHit(MotionEvent event, int[] points, Rect topBounds) {
+        return event.getRawY() < points[1] + topBounds.height();
     }
 
     private void increment(int quantity) {
@@ -215,7 +226,7 @@ public class CustomDatePicker extends LinearLayout implements View.OnTouchListen
         mCurrentMonth = mCalendar.get(Calendar.MONTH);
         mCurrentYear = mCalendar.get(Calendar.YEAR);
         mTextDay.setText(mCurrentDay + "");
-        mTextMonth.setText(mMonthNames[mCurrentMonth]);
+        mTextMonth.setText(mFormatter.format(mCalendar.getTime()).toUpperCase());
         mTextYear.setText(mCurrentYear + "");
     }
 
@@ -235,7 +246,7 @@ public class CustomDatePicker extends LinearLayout implements View.OnTouchListen
         mCurrentMonth = mCalendar.get(Calendar.MONTH);
         mCurrentYear = mCalendar.get(Calendar.YEAR);
         mTextDay.setText(mCurrentDay + "");
-        mTextMonth.setText(mMonthNames[mCurrentMonth]);
+        mTextMonth.setText(mFormatter.format(mCalendar.getTime()).toUpperCase());
         mTextYear.setText(mCurrentYear + "");
     }
 
@@ -243,7 +254,7 @@ public class CustomDatePicker extends LinearLayout implements View.OnTouchListen
     private void toggleDrawable(TextView textView, int index, boolean pressed) {
         Drawable[] drawables = textView.getCompoundDrawables();
         Resources resources = getResources();
-        Resources.Theme theme = mContext.getTheme();
+        Resources.Theme theme = getContext().getTheme();
         Drawable drawable;
         if (index == TOP) {
             if (Util.isLollipopOrMore()) {

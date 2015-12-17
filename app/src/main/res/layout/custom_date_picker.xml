@@ -18,7 +18,6 @@
         android:drawableTop="@drawable/drawable_top_normal"
         android:gravity="center"
         android:singleLine="true"
-        android:text="JUL"
         android:textColor="#B691FF"
         android:textSize="24sp" />
 
@@ -35,7 +34,6 @@
         android:drawableTop="@drawable/drawable_top_normal"
         android:gravity="center"
         android:singleLine="true"
-        android:text="10"
         android:textColor="#B691FF"
         android:textSize="24sp" />
 
@@ -50,7 +48,6 @@
         android:drawableTop="@drawable/drawable_top_normal"
         android:gravity="center"
         android:singleLine="true"
-        android:text="2015"
         android:textColor="#B691FF"
         android:textSize="24sp" />
 </LinearLayout>
