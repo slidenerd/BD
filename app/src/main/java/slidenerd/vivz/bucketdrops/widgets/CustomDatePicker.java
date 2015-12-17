@@ -45,9 +45,6 @@ public class CustomDatePicker extends LinearLayout implements View.OnTouchListen
     private TextView mTextMonth;
     private TextView mTextDay;
     private TextView mTextYear;
-    private int mCurrentYear;
-    private int mCurrentDay;
-    private int mCurrentMonth;
     private boolean mIncrement = false;
     private boolean mDecrement = false;
     private int mQuantity;
@@ -106,34 +103,43 @@ public class CustomDatePicker extends LinearLayout implements View.OnTouchListen
         mTextMonth.setTypeface(typeface);
         mTextYear.setTypeface(typeface);
 
-        try {
-            mCurrentYear = mCalendar.get(Calendar.YEAR);
-            mCurrentMonth = mCalendar.get(Calendar.MONTH);
-            mCurrentDay = mCalendar.get(Calendar.DATE);
+        int year = mCalendar.get(Calendar.YEAR);
+        int month = mCalendar.get(Calendar.MONTH) + 1;
+        int date = mCalendar.get(Calendar.DATE);
 
-            String today = mCurrentYear + "-" + (mCurrentMonth + 1) + "-" + mCurrentDay;
-            mFormatter.applyLocalizedPattern("yyyy-MM-dd");
+        updateUi(date, month, year, 0, 0, 0);
+        mTextDay.setOnTouchListener(this);
+        mTextMonth.setOnTouchListener(this);
+        mTextYear.setOnTouchListener(this);
+    }
+
+    private void updateUi(int date, int month, int year, int hour, int minute, int second) {
+        mCalendar.set(Calendar.DATE, date);
+        mCalendar.set(Calendar.MONTH, month);
+        mCalendar.set(Calendar.YEAR, year);
+        mCalendar.set(Calendar.HOUR, hour);
+        mCalendar.set(Calendar.MINUTE, minute);
+        mCalendar.set(Calendar.SECOND, second);
+        try {
+            String today = year + " " + month + " " + date + " " + hour + " " + minute + " " + second;
+            mFormatter.applyLocalizedPattern("yyyy MM dd hh mm ss");
             mCalendar.setTime(mFormatter.parse(today));
-            mTextYear.setText(mCurrentYear + "");
+            mTextYear.setText(year + "");
             mFormatter.applyLocalizedPattern("MMM");
             mTextMonth.setText(mFormatter.format(mCalendar.getTime()).toUpperCase());
-            mTextDay.setText(mCurrentDay + "");
-
-            mTextDay.setOnTouchListener(this);
-            mTextMonth.setOnTouchListener(this);
-            mTextYear.setOnTouchListener(this);
+            mTextDay.setText(date + "");
         } catch (ParseException e) {
-            Log.d("VIVZ", "parsing error");
+            Log.d("VIVZ", "onRestoreInstanceState: " + e);
         }
     }
 
     @Override
     public Parcelable onSaveInstanceState() {
-
         Bundle bundle = new Bundle();
         bundle.putParcelable("instanceState", super.onSaveInstanceState());
-//        bundle.putInt("stateToSave", this.stateToSave);
-        // ... save everything
+        bundle.putInt("day", mCalendar.get(Calendar.DATE));
+        bundle.putInt("month", mCalendar.get(Calendar.MONTH));
+        bundle.putInt("year", mCalendar.get(Calendar.YEAR));
         return bundle;
     }
 
@@ -142,9 +148,11 @@ public class CustomDatePicker extends LinearLayout implements View.OnTouchListen
 
         if (state instanceof Bundle) {
             Bundle bundle = (Bundle) state;
-//            this.stateToSave = bundle.getInt("stateToSave");
-            // ... load everything
             state = bundle.getParcelable("instanceState");
+            int year = bundle.getInt("year");
+            int month = bundle.getInt("month") + 1;
+            int date = bundle.getInt("day");
+            updateUi(date, month, year, 0, 0, 0);
         }
         super.onRestoreInstanceState(state);
     }
@@ -222,12 +230,9 @@ public class CustomDatePicker extends LinearLayout implements View.OnTouchListen
                 mCalendar.add(Calendar.YEAR, 1);
                 break;
         }
-        mCurrentDay = mCalendar.get(Calendar.DATE);
-        mCurrentMonth = mCalendar.get(Calendar.MONTH);
-        mCurrentYear = mCalendar.get(Calendar.YEAR);
-        mTextDay.setText(mCurrentDay + "");
+        mTextDay.setText(mCalendar.get(Calendar.DATE) + "");
         mTextMonth.setText(mFormatter.format(mCalendar.getTime()).toUpperCase());
-        mTextYear.setText(mCurrentYear + "");
+        mTextYear.setText(mCalendar.get(Calendar.YEAR) + "");
     }
 
     private void decrement(int quantity) {
@@ -242,12 +247,9 @@ public class CustomDatePicker extends LinearLayout implements View.OnTouchListen
                 mCalendar.add(Calendar.YEAR, -1);
                 break;
         }
-        mCurrentDay = mCalendar.get(Calendar.DATE);
-        mCurrentMonth = mCalendar.get(Calendar.MONTH);
-        mCurrentYear = mCalendar.get(Calendar.YEAR);
-        mTextDay.setText(mCurrentDay + "");
+        mTextDay.setText(mCalendar.get(Calendar.DATE) + "");
         mTextMonth.setText(mFormatter.format(mCalendar.getTime()).toUpperCase());
-        mTextYear.setText(mCurrentYear + "");
+        mTextYear.setText(mCalendar.get(Calendar.YEAR) + "");
     }
 
 
@@ -273,16 +275,7 @@ public class CustomDatePicker extends LinearLayout implements View.OnTouchListen
         }
     }
 
-    public int getDay() {
-        return mCurrentDay;
+    public long getTime() {
+        return mCalendar.getTimeInMillis();
     }
-
-    public int getMonth() {
-        return mCurrentMonth;
-    }
-
-    public int getYear() {
-        return mCurrentYear;
-    }
-
 }

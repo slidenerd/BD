@@ -17,8 +17,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.GregorianCalendar;
-
 import slidenerd.vivz.bucketdrops.R;
 import slidenerd.vivz.bucketdrops.adapters.OnAddListener;
 import slidenerd.vivz.bucketdrops.beans.Drop;
@@ -110,12 +108,8 @@ public class DialogAdd extends DialogFragment
             //Load the taskname, convert the user entered date to a specific value of 0 hours 0 minutes and 0 seconds, 12 am precisely on the day they want things to be done
             String taskName = mInputWhat.getText().toString();
 
-            int dayOfMonth = mInputWhen.getDay();
-            int month = mInputWhen.getMonth();
-            int year = mInputWhen.getYear();
-            GregorianCalendar gregorianCalendar = new GregorianCalendar(year, month, dayOfMonth, 0, 0, 0);
             long currentTime = System.currentTimeMillis();
-            long when = gregorianCalendar.getTimeInMillis();
+            long when = mInputWhen.getTime();
             if (when < currentTime) {
                 Toast.makeText(getActivity(), R.string.message_today, Toast.LENGTH_LONG).show();
             } else {
