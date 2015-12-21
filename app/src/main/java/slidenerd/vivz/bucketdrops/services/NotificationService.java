@@ -48,7 +48,7 @@ public class NotificationService extends IntentService {
             long now = System.currentTimeMillis();
             for (final Drop current : realmResults) {
 
-                //If the target date for the current item is not already over and if 90% time has elapsed right now since the item was added, then fire a notification for the same
+                //If the target date for the current row_drop is not already over and if 90% time has elapsed right now since the row_drop was added, then fire a notification for the same
                 if (has90PercentTimeElapsed(current.getAdded(), current.getWhen(), now)) {
                     fireNotification(current);
                 }
@@ -69,7 +69,7 @@ public class NotificationService extends IntentService {
             long difference = when - added;
             //90% of the total duration
             long ninetyPercentDifference = (long) (0.9 * difference);
-            //if more than 90% time has elapsed since the item was added, then return true else return false
+            //if more than 90% time has elapsed since the row_drop was added, then return true else return false
             return (now > (added + ninetyPercentDifference)) ? true : false;
         }
     }

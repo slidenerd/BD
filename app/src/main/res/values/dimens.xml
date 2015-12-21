@@ -1,5 +1,89 @@
 <resources>
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <!--Logo inside empty view-->
+    <dimen name="iv_logo_size">192dp</dimen>
+    <dimen name="iv_logo_margin">84dp</dimen>
+
+    <!--Button add inside empty view-->
+    <dimen name="btn_add_margin">24dp</dimen>
+    <dimen name="btn_add_vertical_padding">8dp</dimen>
+    <dimen name="btn_add_horizontal_padding">60dp</dimen>
+    <dimen name="btn_add_font_size">28sp</dimen>
+
+    <!--Dialog Add-->
+    <dimen name="dlg_add_padding">32dp</dimen>
+
+    <!--Title for Dialog Add-->
+    <dimen name="tv_title_vertical_margin">36dp</dimen>
+    <dimen name="tv_title_font_size">18sp</dimen>
+
+    <!--Close button for Dialog Add-->
+    <dimen name="btn_close_size">12dp</dimen>
+
+    <!--Edit Text that asks you to enter task for Dialog Add -->
+    <dimen name="et_drop_vertical_margin">8dp</dimen>
+    <dimen name="et_drop_padding">16dp</dimen>
+
+    <!--Button Add inside Dialog Add-->
+    <dimen name="btn_add_it_vertical_margin">32dp</dimen>
+    <dimen name="btn_add_it_padding">8dp</dimen>
+    <dimen name="btn_add_it_font_size">28sp</dimen>
+
+    <!--The Root element inside our Bucket Custom Date Picker-->
+    <dimen name="bpv_vertical_padding">24dp</dimen>
+
+    <!--The TextView showing month inside our Custom Bucket Date Picker-->
+    <dimen name="tv_month_drawable_padding">16dp</dimen>
+    <dimen name="tv_month_font_size">24sp</dimen>
+
+    <!--The TextView showing date inside our Custom Bucket Date Picker-->
+    <dimen name="tv_date_horizontal_margin">32dp</dimen>
+    <dimen name="tv_date_drawable_padding">16dp</dimen>
+    <dimen name="tv_date_font_size">24sp</dimen>
+
+    <!--The TextView showing year inside our Custom Bucket Date Picker-->
+    <dimen name="tv_year_drawable_padding">16dp</dimen>
+    <dimen name="tv_year_font_size">24sp</dimen>
+
+    <!--The Root element inside our Dialog Mark-->
+    <dimen name="dlg_mark_padding">24dp</dimen>
+
+    <!--The Mark Complete Button inside our Dialog Mark-->
+    <dimen name="btn_completed_vertical_margin">32dp</dimen>
+    <dimen name="btn_completed_drawable_padding">16dp</dimen>
+    <dimen name="btn_completed_font_size">24sp</dimen>
+
+    <!--The footer item -->
+    <dimen name="btn_footer_horizontal_margin">60dp</dimen>
+    <dimen name="btn_footer_vertical_margin">128dp</dimen>
+
+    <!--The custom row for each drop-->
+    <dimen name="iv_drop_size">12dp</dimen>
+    <dimen name="iv_drop_padding">22dp</dimen>
+    <dimen name="tv_what_vertical_padding">22dp</dimen>
+    <dimen name="tv_when_padding">22dp</dimen>
+
+    <!--The row displaying no items when there are no results after sorting a particular way-->
+    <dimen name="tv_no_items_vertical_padding">22dp</dimen>
+
+    <!--The drawable stroke with and radius for the border around the edittext and button inside Dialog Add-->
+    <dimen name="et_drop_corner_radius">2dp</dimen>
+    <dimen name="et_drop_stroke_width">1dp</dimen>
+    <dimen name="btn_add_it_corner_radius_purple">2dp</dimen>
+    <dimen name="btn_add_it_corner_radius_green">2dp</dimen>
+    <dimen name="btn_add_it_stroke_width">1dp</dimen>
+
+    <!--The drawable for our custom date picker-->
+    <dimen name="bg_picker_stroke_width">1dp</dimen>
+    <dimen name="bg_picker_corner_radius">4dp</dimen>
+    <dimen name="divider_size">1px</dimen>
+
+    <!--The arrow drawable for our custom date picker-->
+    <dimen name="arrow_corner_radius">4dp</dimen>
+    <dimen name="arrow_bottom">4dp</dimen>
+    <dimen name="arrow_left">24dp</dimen>
+    <dimen name="arrow_right">24dp</dimen>
+    <dimen name="arrow_top">4dp</dimen>
+
+
 </resources>

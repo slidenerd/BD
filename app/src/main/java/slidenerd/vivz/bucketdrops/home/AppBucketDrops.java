@@ -13,7 +13,7 @@ import static slidenerd.vivz.bucketdrops.extras.Constants.SORT_ASCENDING_DATE;
 /**
  * Created by vivz on 23/09/15.
  */
-public class BucketDropsApp extends Application {
+public class AppBucketDrops extends Application {
 
     private static SharedPreferences mPreferences;
 

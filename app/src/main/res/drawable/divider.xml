@@ -1,7 +1,7 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
     <size
-        android:width="1px"
-        android:height="1px" />
-    <solid android:color="#241543" />
+        android:width="@dimen/divider_size"
+        android:height="@dimen/divider_size" />
+    <solid android:color="@color/toolbar_color" />
 </shape>

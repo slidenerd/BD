@@ -5,7 +5,7 @@ package slidenerd.vivz.bucketdrops.adapters;
  */
 public interface OnSwipeListener {
     /**
-     * @param position the position of the item that was swiped within the RecyclerView
+     * @param position the position of the row_drop that was swiped within the RecyclerView
      */
     void onSwipe(int position);
 }

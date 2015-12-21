@@ -21,7 +21,7 @@ import slidenerd.vivz.bucketdrops.R;
 import slidenerd.vivz.bucketdrops.adapters.OnAddListener;
 import slidenerd.vivz.bucketdrops.beans.Drop;
 import slidenerd.vivz.bucketdrops.extras.Util;
-import slidenerd.vivz.bucketdrops.widgets.CustomDatePicker;
+import slidenerd.vivz.bucketdrops.widgets.BucketPickerView;
 
 
 public class DialogAdd extends DialogFragment
@@ -35,7 +35,7 @@ public class DialogAdd extends DialogFragment
     //The area where the user can type his/her goal
     private EditText mInputWhat;
     //The control with which user can select the date for his/her goal by which they feel they wanna accomplish their goal
-    private CustomDatePicker mInputWhen;
+    private BucketPickerView mInputWhen;
     //The button clicking which the goal and date will be added to the database
     private Button mBtnAdd;
     //The object which will be notified when the user hits the "Add Drop" button
@@ -45,7 +45,7 @@ public class DialogAdd extends DialogFragment
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
-                case R.id.btn_add:
+                case R.id.btn_add_it:
                     addAction();
                     break;
             }
@@ -79,15 +79,15 @@ public class DialogAdd extends DialogFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mTitle = (TextView) view.findViewById(R.id.text_dialog_title);
+        mTitle = (TextView) view.findViewById(R.id.tv_title);
         //The close button for this dialog
-        mBtnClose = (ImageButton) view.findViewById(R.id.btn_dialog_close);
+        mBtnClose = (ImageButton) view.findViewById(R.id.btn_close);
         //The area where the user can type his/her goal
-        mInputWhat = (EditText) view.findViewById(R.id.input_task);
+        mInputWhat = (EditText) view.findViewById(R.id.et_drop);
         //The control with which user can select the date for his/her goal by which they feel they wanna accomplish their goal
-        mInputWhen = (CustomDatePicker) view.findViewById(R.id.input_time);
+        mInputWhen = (BucketPickerView) view.findViewById(R.id.bpv_date);
         //The button clicking which the goal and date will be added to the database
-        mBtnAdd = (Button) view.findViewById(R.id.btn_add);
+        mBtnAdd = (Button) view.findViewById(R.id.btn_add_it);
         //monitor the user clicking buttons such as DONE on the virtual keyboard
         mInputWhat.setOnEditorActionListener(this);
         mBtnClose.setOnClickListener(mBtnClickListener);

@@ -1,18 +1,18 @@
 package slidenerd.vivz.bucketdrops.home;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+
+import com.bumptech.glide.Glide;
 
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
@@ -54,7 +54,7 @@ public class ActivityMain extends AppCompatActivity {
             mAdapter.add(drop);
         }
     };
-    //When the add item button is clicked, show a dialog that lets the person add a new item
+    //When the add row_drop button is clicked, show a dialog that lets the person add a new row_drop
     private View.OnClickListener mBtnAddListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -67,23 +67,23 @@ public class ActivityMain extends AppCompatActivity {
             showDialogAdd();
         }
     };
-    private DialogActions.MarkedListener mMarkedListener = new DialogActions.MarkedListener() {
+    private DialogMark.MarkedListener mMarkedListener = new DialogMark.MarkedListener() {
         @Override
         public void onMarked(int position) {
-            //Mark an item as complete in our database when the user clicks "Mark as Complete"
+            //Mark an row_drop as complete in our database when the user clicks "Mark as Complete"
             mAdapter.markComplete(position);
         }
     };
     private AdapterDrops.MarkListener mMarkListener = new AdapterDrops.MarkListener() {
         @Override
         public void onMark(int position) {
-            //Launch the DialogActions which are shown when the user clicks on some item from our RecyclerView
+            //Launch the DialogMark which are shown when the user clicks on some row_drop from our RecyclerView
             Bundle arguments = new Bundle();
             arguments.putInt(POSITION, position);
-            DialogActions dialog = new DialogActions();
+            DialogMark dialog = new DialogMark();
             dialog.setArguments(arguments);
             dialog.setDialogActionsListener(mMarkedListener);
-            dialog.show(getSupportFragmentManager(), "dialog_actions");
+            dialog.show(getSupportFragmentManager(), "dialog_mark");
         }
     };
 
@@ -92,23 +92,24 @@ public class ActivityMain extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mRealm = Realm.getDefaultInstance();
-        mToolbar = (Toolbar) findViewById(R.id.app_bar);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         initBackgroundImage();
         initRecycler();
         if (savedInstanceState == null) {
-            Util.notifyUpcomingDrops(this);
+            Util.runBackgroundService(this);
         }
     }
 
     private void initRecycler() {
-        mRecycler = (BucketRecyclerView) findViewById(R.id.recycler_tasks);
-        mEmptyView = findViewById(R.id.recycler_empty_view);
+        mRecycler = (BucketRecyclerView) findViewById(R.id.rv_drops);
+        mEmptyView = findViewById(R.id.empty_drops);
         //Set an Empty View to be displayed when the RecyclerView has no items
         mRecycler.setEmptyView(mEmptyView);
 
-        //hide the toolbar when the bucket is empty and show it when it has atleast one item in it
+        //hide the toolbar when the bucket is empty and show it when it has atleast one row_drop in it
         mRecycler.setToolbar(mToolbar);
+
 
         //Add a divider to our RecyclerView
         mRecycler.addItemDecoration(new Divider(this, LinearLayoutManager.VERTICAL));
@@ -119,6 +120,7 @@ public class ActivityMain extends AppCompatActivity {
         mBtnAdd.setOnClickListener(mBtnAddListener);
         mResults = mRealm.where(Drop.class).findAllSortedAsync(WHEN);
         mAdapter = new AdapterDrops(this, mRealm, mResults);
+        mAdapter.setHasStableIds(true);
         mResults.addChangeListener(new RealmChangeListener() {
             @Override
             public void onChange() {
@@ -142,10 +144,11 @@ public class ActivityMain extends AppCompatActivity {
     private void initBackgroundImage() {
         //Convert our background image to a specific size that suits our device's screen size
         //THIS HAPPENS ON THE UI THREAD WHICH IS A POSSIBLE AREA FOR IMPROVEMENT
-        mBackground = (ImageView) findViewById(R.id.img_background);
-        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        Bitmap bitmapModified = Util.getScaledVersion(this, displayMetrics.widthPixels, displayMetrics.heightPixels);
-        mBackground.setImageBitmap(bitmapModified);
+        mBackground = (ImageView) findViewById(R.id.iv_background);
+        Glide.with(this)
+                .load(R.drawable.background)
+                .centerCrop()
+                .into(mBackground);
     }
 
     private void showDialogAdd() {
@@ -163,7 +166,7 @@ public class ActivityMain extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
+        // Handle action bar row_drop clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
@@ -192,7 +195,7 @@ public class ActivityMain extends AppCompatActivity {
         } else {
             mResults = mRealm.where(Drop.class).findAllAsync();
         }
-        BucketDropsApp.storeSortOption(sortOption);
+        AppBucketDrops.storeSortOption(sortOption);
         mResults.addChangeListener(new RealmChangeListener() {
             @Override
             public void onChange() {

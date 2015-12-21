@@ -8,11 +8,11 @@
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/img_logo"
-            android:layout_width="192dp"
-            android:layout_height="192dp"
+            android:id="@+id/iv_logo"
+            android:layout_width="@dimen/iv_logo_size"
+            android:layout_height="@dimen/iv_logo_size"
             android:layout_centerHorizontal="true"
-            android:layout_margin="84dp"
+            android:layout_margin="@dimen/iv_logo_margin"
             android:scaleType="fitCenter"
             android:src="@drawable/logo" />
 
@@ -20,18 +20,18 @@
             android:id="@+id/btn_add"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/img_logo"
+            android:layout_below="@+id/iv_logo"
             android:layout_centerHorizontal="true"
-            android:layout_margin="24dp"
-            android:background="@drawable/bg_button"
+            android:layout_margin="@dimen/btn_add_margin"
+            android:background="@drawable/bg_btn_add_it"
             android:fontFamily="sans-serif-thin"
-            android:paddingBottom="8dp"
-            android:paddingLeft="60dp"
-            android:paddingRight="60dp"
-            android:paddingTop="8dp"
-            android:text="Add a drop"
+            android:paddingBottom="@dimen/btn_add_vertical_padding"
+            android:paddingLeft="@dimen/btn_add_horizontal_padding"
+            android:paddingRight="@dimen/btn_add_horizontal_padding"
+            android:paddingTop="@dimen/btn_add_vertical_padding"
+            android:text="@string/str_add_drop"
             android:textAllCaps="false"
-            android:textColor="@color/button_text_color"
-            android:textSize="28sp" />
+            android:textColor="@color/btn_add_color"
+            android:textSize="@dimen/btn_add_font_size" />
     </RelativeLayout>
 </ScrollView>

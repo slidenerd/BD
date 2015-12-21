@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/text_no_item"
+    android:id="@+id/tv_no_items"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_bucket_item"
-    android:fontFamily="sans-serif-light"
+    android:background="@drawable/bg_row_drop"
+    android:fontFamily="@string/sans_serif_light"
     android:gravity="center"
     android:orientation="horizontal"
-    android:paddingBottom="22dp"
-    android:paddingTop="22dp"
-    android:text="No items to display"
-    android:textColor="#FFFFFFFF" />
+    android:paddingBottom="@dimen/tv_no_items_vertical_padding"
+    android:paddingTop="@dimen/tv_no_items_vertical_padding"
+    android:text="@string/str_no_items"
+    android:textColor="@android:color/white" />

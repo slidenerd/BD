@@ -13,7 +13,7 @@ public class BucketRecyclerView extends RecyclerView {
      */
     private View mEmptyView;
     private Toolbar mToolbar;
-    private AdapterDataObserver mEmptyObserver = new AdapterDataObserver() {
+    private AdapterDataObserver mObserver = new AdapterDataObserver() {
 
         /**
          * Whenever this method is triggered, if the RecyclerView has some items to display, show it and hide the empty view otherwise do the reverse
@@ -72,9 +72,9 @@ public class BucketRecyclerView extends RecyclerView {
         super.setAdapter(adapter);
         if (adapter != null) {
             //Register an AdapterDataSetObserver to monitor the number of items in the RecyclerView whenever items are being added, removed
-            adapter.registerAdapterDataObserver(mEmptyObserver);
+            adapter.registerAdapterDataObserver(mObserver);
         }
-        mEmptyObserver.onChanged();
+        mObserver.onChanged();
     }
 
     public void setEmptyView(View emptyView) {

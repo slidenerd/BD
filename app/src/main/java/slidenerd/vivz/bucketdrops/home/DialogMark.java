@@ -14,7 +14,7 @@ import slidenerd.vivz.bucketdrops.R;
 import static slidenerd.vivz.bucketdrops.extras.Constants.POSITION;
 
 
-public class DialogActions extends DialogFragment {
+public class DialogMark extends DialogFragment {
 
     private Bundle mArguments;
     private Button mBtnMarkCompleted;
@@ -43,7 +43,7 @@ public class DialogActions extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.dialog_actions, container, false);
+        return inflater.inflate(R.layout.dialog_mark, container, false);
     }
 
     public void setDialogActionsListener(MarkedListener listener) {
@@ -55,7 +55,7 @@ public class DialogActions extends DialogFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mBtnMarkCompleted = (Button) view.findViewById(R.id.btn_completed);
-        mBtnClose = (ImageButton) view.findViewById(R.id.btn_dialog_close);
+        mBtnClose = (ImageButton) view.findViewById(R.id.btn_close);
         mBtnMarkCompleted.setOnClickListener(mBtnClickListener);
         mBtnClose.setOnClickListener(mBtnClickListener);
     }
@@ -63,7 +63,7 @@ public class DialogActions extends DialogFragment {
 
     private void completeAction() {
         if (mMarkedListener == null) return;
-        //When the user marks an item as complete, get the item's id and notify the interested listeners so that they can further process this event
+        //When the user marks an row_drop as complete, get the row_drop's id and notify the interested listeners so that they can further process this event
         int position = mArguments.getInt(POSITION);
         mMarkedListener.onMarked(position);
     }

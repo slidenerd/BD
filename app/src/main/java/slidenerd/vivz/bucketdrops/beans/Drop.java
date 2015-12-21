@@ -7,7 +7,7 @@ import io.realm.annotations.PrimaryKey;
  * Created by vivz on 07/07/15.
  */
 public class Drop extends RealmObject {
-    //The date when this item was created by the user, Example: July 13 2015 converted and stored in milliseconds
+    //The date when this row_drop was created by the user, Example: July 13 2015 converted and stored in milliseconds
     @PrimaryKey
     private long added;
     //Example "I want to take a tour of the Bahamas"

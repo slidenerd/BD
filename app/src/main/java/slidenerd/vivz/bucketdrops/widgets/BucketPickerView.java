@@ -31,7 +31,7 @@ import slidenerd.vivz.bucketdrops.extras.Util;
  * Created by vivz on 26/10/15.
  * TODO save state on rotation
  */
-public class CustomDatePicker extends LinearLayout implements View.OnTouchListener {
+public class BucketPickerView extends LinearLayout implements View.OnTouchListener {
 
     public static final int DELAY = 150;
     public static final int TOP = 1;
@@ -68,23 +68,23 @@ public class CustomDatePicker extends LinearLayout implements View.OnTouchListen
         }
     });
 
-    public CustomDatePicker(Context context) {
+    public BucketPickerView(Context context) {
         super(context);
         init(context);
     }
 
-    public CustomDatePicker(Context context, AttributeSet attrs) {
+    public BucketPickerView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
-    public CustomDatePicker(Context context, AttributeSet attrs, int defStyleAttr) {
+    public BucketPickerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public CustomDatePicker(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public BucketPickerView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init(context);
     }
@@ -94,10 +94,10 @@ public class CustomDatePicker extends LinearLayout implements View.OnTouchListen
 
         mCalendar = Calendar.getInstance();
         LayoutInflater layoutInflater = LayoutInflater.from(context);
-        View view = layoutInflater.inflate(R.layout.custom_date_picker, this);
-        mTextDay = (TextView) view.findViewById(R.id.date_display);
-        mTextMonth = (TextView) view.findViewById(R.id.month_display);
-        mTextYear = (TextView) view.findViewById(R.id.year_display);
+        View view = layoutInflater.inflate(R.layout.bucket_picker_view, this);
+        mTextDay = (TextView) view.findViewById(R.id.tv_date);
+        mTextMonth = (TextView) view.findViewById(R.id.tv_month);
+        mTextYear = (TextView) view.findViewById(R.id.tv_year);
 
         mTextDay.setTypeface(typeface);
         mTextMonth.setTypeface(typeface);
@@ -159,15 +159,15 @@ public class CustomDatePicker extends LinearLayout implements View.OnTouchListen
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        if (v.getId() == R.id.date_display) {
+        if (v.getId() == R.id.tv_date) {
             mQuantity = DAY;
             processEventsFor(mTextDay, event, DAY);
         }
-        if (v.getId() == R.id.month_display) {
+        if (v.getId() == R.id.tv_month) {
             mQuantity = MONTH;
             processEventsFor(mTextMonth, event, MONTH);
         }
-        if (v.getId() == R.id.year_display) {
+        if (v.getId() == R.id.tv_year) {
             mQuantity = YEAR;
             processEventsFor(mTextYear, event, YEAR);
         }
@@ -260,16 +260,16 @@ public class CustomDatePicker extends LinearLayout implements View.OnTouchListen
         Drawable drawable;
         if (index == TOP) {
             if (Util.isLollipopOrMore()) {
-                drawable = resources.getDrawable(pressed ? R.drawable.drawable_top_pressed : R.drawable.drawable_top_normal, theme);
+                drawable = resources.getDrawable(pressed ? R.drawable.up_pressed : R.drawable.up_normal, theme);
             } else {
-                drawable = resources.getDrawable(pressed ? R.drawable.drawable_top_pressed : R.drawable.drawable_top_normal);
+                drawable = resources.getDrawable(pressed ? R.drawable.up_pressed : R.drawable.up_normal);
             }
             textView.setCompoundDrawablesWithIntrinsicBounds(drawables[0], drawable, drawables[2], drawables[3]);
         } else if (index == BOTTOM) {
             if (Util.isLollipopOrMore()) {
-                drawable = resources.getDrawable(pressed ? R.drawable.drawable_bottom_pressed : R.drawable.drawable_bottom_normal, theme);
+                drawable = resources.getDrawable(pressed ? R.drawable.down_pressed : R.drawable.down_normal, theme);
             } else {
-                drawable = resources.getDrawable(pressed ? R.drawable.drawable_bottom_pressed : R.drawable.drawable_bottom_normal);
+                drawable = resources.getDrawable(pressed ? R.drawable.down_pressed : R.drawable.down_normal);
             }
             textView.setCompoundDrawablesWithIntrinsicBounds(drawables[0], drawables[1], drawables[2], drawable);
         }

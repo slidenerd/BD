@@ -1,8 +1,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#E30D0028"
-    android:padding="24dp">
+    android:background="@color/bg_dialog"
+    android:padding="@dimen/dlg_mark_padding">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -11,9 +11,9 @@
         android:orientation="vertical">
 
         <ImageButton
-            android:id="@+id/btn_dialog_close"
-            android:layout_width="12dp"
-            android:layout_height="12dp"
+            android:id="@+id/btn_close"
+            android:layout_width="@dimen/btn_close_size"
+            android:layout_height="@dimen/btn_close_size"
             android:layout_alignParentRight="true"
             android:layout_gravity="right"
             android:background="@null"
@@ -24,17 +24,17 @@
             android:id="@+id/btn_completed"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp"
-            android:layout_marginTop="32dp"
-            android:drawablePadding="16dp"
+            android:layout_marginBottom="@dimen/btn_completed_vertical_margin"
+            android:layout_marginTop="@dimen/btn_completed_vertical_margin"
+            android:background="@null"
+            android:drawablePadding="@dimen/btn_completed_drawable_padding"
             android:drawableTop="@drawable/ic_check"
             android:fontFamily="sans-serif-light"
             android:gravity="center"
-            android:background="@null"
-            android:text="Mark Completed"
+            android:text="@string/str_mark_completed"
             android:textAllCaps="false"
             android:textColor="@android:color/white"
-            android:textSize="24sp" />
+            android:textSize="@dimen/btn_completed_font_size" />
     </LinearLayout>
 
 </FrameLayout>

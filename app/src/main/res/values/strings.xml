@@ -12,4 +12,10 @@
     <string name="action_show_uncompleted">Show uncompleted</string>
     <string name="message_today">Right Today? Are You Serious!</string>
     <string name="notification_added">"You added this item on "</string>
+    <string name="sans_serif_light">sans-serif-light</string>
+    <string name="str_add_drop">Add a drop</string>
+    <string name="hint_et_drop">What is it?</string>
+    <string name="str_add_it">Add It</string>
+    <string name="str_mark_completed">Mark Completed</string>
+    <string name="str_no_items">No items to display</string>
 </resources>

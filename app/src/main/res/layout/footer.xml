@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
 <Button xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/btn_add"
+    android:id="@+id/btn_footer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:layout_marginBottom="128dp"
-    android:layout_marginLeft="60dp"
-    android:layout_marginRight="60dp"
-    android:layout_marginTop="128dp"
-    android:background="@drawable/bg_button"
-    android:fontFamily="sans-serif-thin"
-    android:text="Add a drop"
+    android:layout_marginBottom="@dimen/btn_footer_vertical_margin"
+    android:layout_marginLeft="@dimen/btn_footer_horizontal_margin"
+    android:layout_marginRight="@dimen/btn_footer_horizontal_margin"
+    android:layout_marginTop="@dimen/btn_footer_vertical_margin"
+    android:background="@drawable/bg_btn_add_it"
+    android:fontFamily="@string/sans_serif_light"
+    android:text="@string/str_add_drop"
     android:textAllCaps="false"
-    android:textColor="@color/button_text_color"
-    android:textSize="28sp" />
+    android:textColor="@color/btn_add_color"
+    android:textSize="@dimen/btn_add_it_font_size" />

@@ -5,25 +5,25 @@
     tools:context="slidenerd.vivz.bucketdrops.home.ActivityMain">
 
     <include
-        android:id="@+id/app_bar"
+        android:id="@+id/toolbar"
         layout="@layout/toolbar" />
 
     <ImageView
-        android:id="@+id/img_background"
+        android:id="@+id/iv_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/app_bar"
+        android:layout_below="@+id/toolbar"
         android:scaleType="centerCrop" />
 
     <slidenerd.vivz.bucketdrops.widgets.BucketRecyclerView
-        android:id="@+id/recycler_tasks"
+        android:id="@+id/rv_drops"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/app_bar" />
+        android:layout_below="@+id/toolbar" />
 
     <include
-        android:id="@+id/recycler_empty_view"
-        layout="@layout/bucket_empty_view"
+        android:id="@+id/empty_drops"
+        layout="@layout/empty_drops"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </RelativeLayout>

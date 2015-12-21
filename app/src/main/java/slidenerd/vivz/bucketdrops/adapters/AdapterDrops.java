@@ -17,7 +17,7 @@ import io.realm.RealmResults;
 import slidenerd.vivz.bucketdrops.R;
 import slidenerd.vivz.bucketdrops.beans.Drop;
 import slidenerd.vivz.bucketdrops.extras.Util;
-import slidenerd.vivz.bucketdrops.home.BucketDropsApp;
+import slidenerd.vivz.bucketdrops.home.AppBucketDrops;
 
 import static slidenerd.vivz.bucketdrops.extras.Constants.SORT_ASCENDING_DATE;
 
@@ -45,7 +45,7 @@ public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     public void updateResults(RealmResults<Drop> results) {
         mResults = results;
-        mSort = BucketDropsApp.loadSortOption();
+        mSort = AppBucketDrops.loadSortOption();
         notifyDataSetChanged();
     }
 
@@ -54,7 +54,7 @@ public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         if (mResults == null) {
             return RecyclerView.NO_ID;
         } else {
-            return mResults.get(position).getAdded();
+            return position < mResults.size() ? mResults.get(position).getAdded() : RecyclerView.NO_ID;
         }
     }
 
@@ -117,7 +117,7 @@ public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             NoItemsHolder viewHolder = new NoItemsHolder(root);
             return viewHolder;
         } else {
-            View root = mInflater.inflate(R.layout.item, parent, false);
+            View root = mInflater.inflate(R.layout.row_drop, parent, false);
             DropHolder dropHolder = new DropHolder(root);
             return dropHolder;
         }
@@ -149,13 +149,13 @@ public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             Drop drop = mResults.get(position);
             mRealm.beginTransaction();
             drop.setCompleted(true);
-            notifyItemChanged(position);
+            notifyDataSetChanged();
             mRealm.commitTransaction();
         }
     }
 
     /**
-     * @param position the position of the item that was swiped within the RecyclerView
+     * @param position the position of the row_drop that was swiped within the RecyclerView
      */
     @Override
     public void onSwipe(int position) {
@@ -167,7 +167,7 @@ public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
         if (mResults.isEmpty() && mSort != SORT_ASCENDING_DATE) {
             mSort = SORT_ASCENDING_DATE;
-            BucketDropsApp.storeSortOption(mSort);
+            AppBucketDrops.storeSortOption(mSort);
             notifyDataSetChanged();
         }
     }
@@ -180,11 +180,11 @@ public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     /**
-     * An interface that notifies your class when any item is clicked from your RecyclerView
+     * An interface that notifies your class when any row_drop is clicked from your RecyclerView
      */
     public interface MarkListener {
         /**
-         * @param position is the position of the item that was clicked by the user inside the RecylerView
+         * @param position is the position of the row_drop that was clicked by the user inside the RecylerView
          */
         void onMark(int position);
     }
@@ -205,7 +205,7 @@ public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         public DropHolder(View itemView) {
             super(itemView);
             mRoot = itemView;
-            mTextWhat = (TextView) mRoot.findViewById(R.id.text_what);
+            mTextWhat = (TextView) mRoot.findViewById(R.id.tv_what);
             mTextWhen = (TextView) mRoot.findViewById(R.id.text_when);
             itemView.setOnClickListener(this);
         }
@@ -214,7 +214,7 @@ public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         public void onClick(View v) {
 
             if (mMarkListener != null) {
-                //Notify interested classes about the item that was clicked at the current position
+                //Notify interested classes about the row_drop that was clicked at the current position
                 mMarkListener.onMark(getAdapterPosition());
             }
         }
@@ -234,7 +234,7 @@ public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             if (isCompleted) {
                 background = new ColorDrawable(Color.argb(237, 142, 121, 187));
             } else {
-                background = mContext.getResources().getDrawable(R.drawable.bg_bucket_item);
+                background = mContext.getResources().getDrawable(R.drawable.bg_row_drop);
             }
             if (Util.isJellyBeanOrMore()) {
                 mRoot.setBackgroundDrawable(background);
@@ -249,7 +249,7 @@ public class AdapterDrops extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         public FooterHolder(View itemView) {
             super(itemView);
-            mBtnAdd = (Button) itemView.findViewById(R.id.btn_add);
+            mBtnAdd = (Button) itemView.findViewById(R.id.btn_footer);
             mBtnAdd.setTypeface(Util.loadRalewayThin(mContext));
         }
     }

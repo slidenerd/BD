@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="toolbar_color">#241543</color>
+    <color name="bg_dialog">#E30D0028</color>
+    <color name="purple">#B691FF</color>
+    <color name="green">#05FFCA</color>
+    <color name="bg_row_drop_dark">#C98E79BB</color>
+    <color name="bg_row_drop_light">#4A8E79BB</color>
+</resources>

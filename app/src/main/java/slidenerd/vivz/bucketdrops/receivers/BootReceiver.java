@@ -13,6 +13,6 @@ public class BootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         //Triggered when the device reboots or restarts, launch the Notifcation Service here to decide which drops the user needs to be notified about
-        Util.notifyUpcomingDrops(context);
+        Util.runBackgroundService(context);
     }
 }
