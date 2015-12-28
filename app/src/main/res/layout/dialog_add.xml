@@ -1,86 +1,83 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/bg_dialog"
-    android:fillViewport="true"
-    android:padding="@dimen/dlg_add_padding">
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center">
-
-            <TextView
-                android:id="@+id/tv_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginBottom="@dimen/tv_title_vertical_margin"
-                android:layout_marginTop="@dimen/tv_title_vertical_margin"
-                android:layout_weight="1"
-                android:fontFamily="@string/sans_serif_light"
-                android:text="@string/str_add_drop"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/tv_title_font_size" />
-
-            <ImageButton
-                android:id="@+id/btn_close"
-                android:layout_width="@dimen/btn_close_size"
-                android:layout_height="@dimen/btn_close_size"
-                android:layout_alignBottom="@+id/tv_title"
-                android:layout_alignParentRight="true"
-                android:layout_alignTop="@+id/tv_title"
-                android:background="@null"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_close" />
+            android:background="@color/bg_dialog"
+            android:fillViewport="true"
+            android:padding="@dimen/dlg_add_padding"
+            android:scrollbarStyle="outsideOverlay">
 
 
-            <EditText
-                android:id="@+id/et_drop"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/tv_title"
-                android:layout_marginBottom="@dimen/et_drop_vertical_margin"
-                android:layout_marginTop="@dimen/et_drop_vertical_margin"
-                android:background="@drawable/bg_et_drop"
-                android:fontFamily="@string/sans_serif_light"
-                android:hint="@string/hint_et_drop"
-                android:imeOptions="actionDone"
-                android:padding="@dimen/et_drop_padding"
-                android:singleLine="true"
-                android:textColor="@android:color/white"
-                android:textColorHint="@android:color/white">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center">
 
-                <requestFocus />
-            </EditText>
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="@dimen/tv_title_vertical_margin"
+            android:layout_marginTop="@dimen/tv_title_vertical_margin"
+            android:layout_weight="1"
+            android:fontFamily="@string/sans_serif_light"
+            android:text="@string/str_add_drop"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/tv_title_font_size"/>
 
-            <slidenerd.vivz.bucketdrops.widgets.BucketPickerView
-                android:id="@+id/bpv_date"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/et_drop" />
+        <ImageButton
+            android:id="@+id/btn_close"
+            android:layout_width="@dimen/btn_close_size"
+            android:layout_height="@dimen/btn_close_size"
+            android:layout_alignBottom="@+id/tv_title"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/tv_title"
+            android:background="@null"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_close"/>
 
-            <Button
-                android:id="@+id/btn_add_it"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/bpv_date"
-                android:layout_marginBottom="@dimen/btn_add_it_vertical_margin"
-                android:layout_marginTop="@dimen/btn_add_it_vertical_margin"
-                android:background="@drawable/bg_btn_add_it"
-                android:fontFamily="@string/sans_serif_light"
-                android:padding="@dimen/btn_add_it_padding"
-                android:text="@string/str_add_it"
-                android:textAllCaps="false"
-                android:textColor="@color/btn_add_color"
-                android:textSize="@dimen/btn_add_it_font_size" />
-        </RelativeLayout>
-    </FrameLayout>
+
+        <EditText
+            android:id="@+id/et_drop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_title"
+            android:layout_marginBottom="@dimen/et_drop_vertical_margin"
+            android:layout_marginTop="@dimen/et_drop_vertical_margin"
+            android:background="@drawable/bg_et_drop"
+            android:fontFamily="@string/sans_serif_light"
+            android:hint="@string/hint_et_drop"
+            android:imeOptions="actionDone"
+            android:padding="@dimen/et_drop_padding"
+            android:singleLine="true"
+            android:textColor="@android:color/white"
+            android:textColorHint="@android:color/white">
+
+            <requestFocus/>
+        </EditText>
+
+        <slidenerd.vivz.bucketdrops.widgets.BucketPickerView
+            android:id="@+id/bpv_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/et_drop"/>
+
+        <Button
+            android:id="@+id/btn_add_it"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/bpv_date"
+            android:layout_marginBottom="@dimen/btn_add_it_vertical_margin"
+            android:layout_marginTop="@dimen/btn_add_it_vertical_margin"
+            android:background="@drawable/bg_btn_add_it"
+            android:fontFamily="@string/sans_serif_light"
+            android:padding="@dimen/btn_add_it_padding"
+            android:text="@string/str_add_it"
+            android:textAllCaps="false"
+            android:textColor="@color/btn_add_color"
+            android:textSize="@dimen/btn_add_it_font_size"/>
+    </RelativeLayout>
 </ScrollView>
 
 

@@ -11,7 +11,7 @@
     <dimen name="btn_add_font_size">28sp</dimen>
 
     <!--Dialog Add-->
-    <dimen name="dlg_add_padding">32dp</dimen>
+    <dimen name="dlg_add_padding">24dp</dimen>
 
     <!--Title for Dialog Add-->
     <dimen name="tv_title_vertical_margin">36dp</dimen>
@@ -33,7 +33,7 @@
     <dimen name="bpv_vertical_padding">24dp</dimen>
 
     <!--The TextView showing month inside our Custom Bucket Date Picker-->
-    <dimen name="tv_month_drawable_padding">16dp</dimen>
+    <dimen name="tv_month_padding">12dp</dimen>
     <dimen name="tv_month_font_size">24sp</dimen>
 
     <!--The TextView showing date inside our Custom Bucket Date Picker-->
@@ -79,10 +79,7 @@
     <dimen name="divider_size">1px</dimen>
 
     <!--The arrow drawable for our custom date picker-->
-    <dimen name="arrow_corner_radius">4dp</dimen>
     <dimen name="arrow_bottom">4dp</dimen>
-    <dimen name="arrow_left">24dp</dimen>
-    <dimen name="arrow_right">24dp</dimen>
     <dimen name="arrow_top">4dp</dimen>
 
 

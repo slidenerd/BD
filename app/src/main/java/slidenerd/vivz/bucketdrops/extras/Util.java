@@ -5,7 +5,10 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.view.View;
+import android.widget.ImageView;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -50,5 +53,29 @@ public class Util {
         SimpleDateFormat format = new SimpleDateFormat("MM/dd/yy");
         String outputDate = format.format(new Date(milliseconds));
         return outputDate;
+    }
+
+    public static Drawable getDrawable(Context context, int resourceId) {
+        Drawable drawable;
+        if (isLollipopOrMore()) {
+            drawable = context.getResources().getDrawable(resourceId);
+        } else {
+            drawable = context.getDrawable(resourceId);
+        }
+        return drawable;
+    }
+
+    public static void setBackgroundDrawable(View view, int resourceId) {
+        Drawable drawable = getDrawable(view.getContext(), resourceId);
+        if (isJellyBeanOrMore()) {
+            view.setBackground(drawable);
+        } else {
+            view.setBackgroundDrawable(drawable);
+        }
+    }
+
+    public static void setImageDrawable(ImageView imageView, int resourceId) {
+        Drawable drawable = getDrawable(imageView.getContext(), resourceId);
+        imageView.setImageDrawable(drawable);
     }
 }

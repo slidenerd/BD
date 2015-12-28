@@ -2,10 +2,7 @@ package slidenerd.vivz.bucketdrops.widgets;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.Rect;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,12 +13,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Queue;
 
 import slidenerd.vivz.bucketdrops.R;
 import slidenerd.vivz.bucketdrops.extras.Util;
@@ -29,24 +28,28 @@ import slidenerd.vivz.bucketdrops.extras.Util;
 
 /**
  * Created by vivz on 26/10/15.
- * TODO save state on rotation
  */
 public class BucketPickerView extends LinearLayout implements View.OnTouchListener {
 
     public static final int DELAY = 150;
-    public static final int TOP = 1;
-    public static final int BOTTOM = 3;
-    public static final int DAY = 0;
+    public static final int MESSAGE_CHECK_BTN_STILL_PRESSED = 1;
+    public static final int DATE = 0;
     public static final int MONTH = 1;
     public static final int YEAR = 2;
-    public static final int MESSAGE_CHECK_BTN_STILL_PRESSED = 1;
     private SimpleDateFormat mFormatter = new SimpleDateFormat();
     private Calendar mCalendar;
     private TextView mTextMonth;
-    private TextView mTextDay;
+    private TextView mTextDate;
     private TextView mTextYear;
+    private ImageButton mBtnIncDate;
+    private ImageButton mBtnDecDate;
+    private ImageButton mBtnIncMonth;
+    private ImageButton mBtnDecMonth;
+    private ImageButton mBtnIncYear;
+    private ImageButton mBtnDecYear;
     private boolean mIncrement = false;
     private boolean mDecrement = false;
+    private boolean mPressed = false;
     private int mQuantity;
     public final Handler mHandler = new Handler(new Handler.Callback() {
         @Override
@@ -59,7 +62,8 @@ public class BucketPickerView extends LinearLayout implements View.OnTouchListen
                     if (mDecrement) {
                         decrement(mQuantity);
                     }
-                    if (mIncrement || mDecrement) {
+                    if (mIncrement
+                            || mDecrement) {
                         mHandler.sendEmptyMessageDelayed(MESSAGE_CHECK_BTN_STILL_PRESSED, DELAY);
                     }
                     break;
@@ -95,11 +99,25 @@ public class BucketPickerView extends LinearLayout implements View.OnTouchListen
         mCalendar = Calendar.getInstance();
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         View view = layoutInflater.inflate(R.layout.bucket_picker_view, this);
-        mTextDay = (TextView) view.findViewById(R.id.tv_date);
+        mTextDate = (TextView) view.findViewById(R.id.tv_date);
         mTextMonth = (TextView) view.findViewById(R.id.tv_month);
         mTextYear = (TextView) view.findViewById(R.id.tv_year);
 
-        mTextDay.setTypeface(typeface);
+        mBtnIncDate = (ImageButton) view.findViewById(R.id.ib_increment_date);
+        mBtnDecDate = (ImageButton) view.findViewById(R.id.ib_decrement_date);
+        mBtnIncMonth = (ImageButton) view.findViewById(R.id.ib_increment_month);
+        mBtnDecMonth = (ImageButton) view.findViewById(R.id.ib_decrement_month);
+        mBtnIncYear = (ImageButton) view.findViewById(R.id.ib_increment_year);
+        mBtnDecYear = (ImageButton) view.findViewById(R.id.ib_decrement_year);
+
+        mBtnIncDate.setOnTouchListener(this);
+        mBtnDecDate.setOnTouchListener(this);
+        mBtnIncMonth.setOnTouchListener(this);
+        mBtnDecMonth.setOnTouchListener(this);
+        mBtnIncYear.setOnTouchListener(this);
+        mBtnDecYear.setOnTouchListener(this);
+
+        mTextDate.setTypeface(typeface);
         mTextMonth.setTypeface(typeface);
         mTextYear.setTypeface(typeface);
 
@@ -108,9 +126,6 @@ public class BucketPickerView extends LinearLayout implements View.OnTouchListen
         int date = mCalendar.get(Calendar.DATE);
 
         updateUi(date, month, year, 0, 0, 0);
-        mTextDay.setOnTouchListener(this);
-        mTextMonth.setOnTouchListener(this);
-        mTextYear.setOnTouchListener(this);
     }
 
     private void updateUi(int date, int month, int year, int hour, int minute, int second) {
@@ -127,7 +142,7 @@ public class BucketPickerView extends LinearLayout implements View.OnTouchListen
             mTextYear.setText(year + "");
             mFormatter.applyLocalizedPattern("MMM");
             mTextMonth.setText(mFormatter.format(mCalendar.getTime()).toUpperCase());
-            mTextDay.setText(date + "");
+            mTextDate.setText(date + "");
         } catch (ParseException e) {
             Log.d("VIVZ", "onRestoreInstanceState: " + e);
         }
@@ -159,68 +174,91 @@ public class BucketPickerView extends LinearLayout implements View.OnTouchListen
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        if (v.getId() == R.id.tv_date) {
-            mQuantity = DAY;
-            processEventsFor(mTextDay, event, DAY);
-        }
-        if (v.getId() == R.id.tv_month) {
-            mQuantity = MONTH;
-            processEventsFor(mTextMonth, event, MONTH);
-        }
-        if (v.getId() == R.id.tv_year) {
-            mQuantity = YEAR;
-            processEventsFor(mTextYear, event, YEAR);
-        }
-        return true;
-    }
-
-    public void processEventsFor(TextView textView, MotionEvent event, int quantity) {
-        int[] points = new int[2];
-        textView.getLocationInWindow(points);
-        Drawable[] drawables = textView.getCompoundDrawables();
-        Rect topBounds = drawables[TOP].getBounds();
-        Rect bottomBounds = drawables[BOTTOM].getBounds();
+        int id = v.getId();
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                if (isTopHit(event, points, topBounds)) {
-                    // your action for drawable click event
-                    mIncrement = true;
-                    toggleDrawable(textView, TOP, true);
+                mPressed = true;
+                switch (id) {
+                    case R.id.ib_increment_date:
+                        mIncrement = true;
+                        mQuantity = DATE;
+                        increment(mQuantity);
+                        toggleDrawable(mBtnIncDate, true);
+                        break;
+                    case R.id.ib_decrement_date:
+                        mDecrement = true;
+                        mQuantity = DATE;
+                        decrement(mQuantity);
+                        toggleDrawable(mBtnDecDate, false);
+                        break;
+                    case R.id.ib_increment_month:
+                        mIncrement = true;
+                        mQuantity = MONTH;
+                        increment(mQuantity);
+                        toggleDrawable(mBtnIncMonth, true);
+                        break;
+                    case R.id.ib_decrement_month:
+                        mDecrement = true;
+                        mQuantity = MONTH;
+                        decrement(mQuantity);
+                        toggleDrawable(mBtnDecMonth, false);
+                        break;
+                    case R.id.ib_increment_year:
+                        mIncrement = true;
+                        mQuantity = YEAR;
+                        increment(mQuantity);
+                        toggleDrawable(mBtnIncYear, true);
+                        break;
+                    case R.id.ib_decrement_year:
+                        mDecrement = true;
+                        mQuantity = YEAR;
+                        decrement(mQuantity);
+                        toggleDrawable(mBtnDecYear, false);
+                        break;
                 }
-                if (isBottomHit(textView, event, points, bottomBounds)) {
-                    mDecrement = true;
-                    toggleDrawable(textView, BOTTOM, true);
-                }
-                if (mIncrement) {
-                    increment(quantity);
-                }
-                if (mDecrement) {
-                    decrement(quantity);
-                }
+
                 mHandler.sendEmptyMessageDelayed(MESSAGE_CHECK_BTN_STILL_PRESSED, DELAY);
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
-                // your action for drawable click event
-                toggleDrawable(textView, TOP, false);
-                toggleDrawable(textView, BOTTOM, false);
+                mPressed = false;
+                toggleDrawable(mBtnIncDate, true);
+                toggleDrawable(mBtnDecDate, false);
+                toggleDrawable(mBtnIncMonth, true);
+                toggleDrawable(mBtnDecMonth, false);
+                toggleDrawable(mBtnIncYear, true);
+                toggleDrawable(mBtnDecYear, false);
                 mIncrement = false;
                 mDecrement = false;
                 break;
         }
+
+        return true;
     }
 
-    private boolean isBottomHit(TextView textView, MotionEvent event, int[] points, Rect bottomBounds) {
-        return event.getRawY() > points[1] + textView.getHeight() - bottomBounds.height();
-    }
-
-    private boolean isTopHit(MotionEvent event, int[] points, Rect topBounds) {
-        return event.getRawY() < points[1] + topBounds.height();
+    private void toggleDrawable(ImageButton button, boolean up) {
+        if (up) {
+            if (mPressed) {
+                Util.setBackgroundDrawable(button, R.drawable.transparent_box_up);
+                Util.setImageDrawable(button, R.drawable.ic_menu_up_colored);
+            } else {
+                Util.setBackgroundDrawable(button, R.drawable.purple_box_up);
+                Util.setImageDrawable(button, R.drawable.ic_menu_up_transparent);
+            }
+        } else {
+            if (mPressed) {
+                Util.setBackgroundDrawable(button, R.drawable.transparent_box_down);
+                Util.setImageDrawable(button, R.drawable.ic_menu_down_colored);
+            } else {
+                Util.setBackgroundDrawable(button, R.drawable.purple_box_down);
+                Util.setImageDrawable(button, R.drawable.ic_menu_down_transparent);
+            }
+        }
     }
 
     private void increment(int quantity) {
         switch (quantity) {
-            case DAY:
+            case DATE:
                 mCalendar.add(Calendar.DATE, 1);
                 break;
             case MONTH:
@@ -230,14 +268,14 @@ public class BucketPickerView extends LinearLayout implements View.OnTouchListen
                 mCalendar.add(Calendar.YEAR, 1);
                 break;
         }
-        mTextDay.setText(mCalendar.get(Calendar.DATE) + "");
+        mTextDate.setText(mCalendar.get(Calendar.DATE) + "");
         mTextMonth.setText(mFormatter.format(mCalendar.getTime()).toUpperCase());
         mTextYear.setText(mCalendar.get(Calendar.YEAR) + "");
     }
 
     private void decrement(int quantity) {
         switch (quantity) {
-            case DAY:
+            case DATE:
                 mCalendar.add(Calendar.DATE, -1);
                 break;
             case MONTH:
@@ -247,35 +285,13 @@ public class BucketPickerView extends LinearLayout implements View.OnTouchListen
                 mCalendar.add(Calendar.YEAR, -1);
                 break;
         }
-        mTextDay.setText(mCalendar.get(Calendar.DATE) + "");
+        mTextDate.setText(mCalendar.get(Calendar.DATE) + "");
         mTextMonth.setText(mFormatter.format(mCalendar.getTime()).toUpperCase());
         mTextYear.setText(mCalendar.get(Calendar.YEAR) + "");
-    }
-
-
-    private void toggleDrawable(TextView textView, int index, boolean pressed) {
-        Drawable[] drawables = textView.getCompoundDrawables();
-        Resources resources = getResources();
-        Resources.Theme theme = getContext().getTheme();
-        Drawable drawable;
-        if (index == TOP) {
-            if (Util.isLollipopOrMore()) {
-                drawable = resources.getDrawable(pressed ? R.drawable.up_pressed : R.drawable.up_normal, theme);
-            } else {
-                drawable = resources.getDrawable(pressed ? R.drawable.up_pressed : R.drawable.up_normal);
-            }
-            textView.setCompoundDrawablesWithIntrinsicBounds(drawables[0], drawable, drawables[2], drawables[3]);
-        } else if (index == BOTTOM) {
-            if (Util.isLollipopOrMore()) {
-                drawable = resources.getDrawable(pressed ? R.drawable.down_pressed : R.drawable.down_normal, theme);
-            } else {
-                drawable = resources.getDrawable(pressed ? R.drawable.down_pressed : R.drawable.down_normal);
-            }
-            textView.setCompoundDrawablesWithIntrinsicBounds(drawables[0], drawables[1], drawables[2], drawable);
-        }
     }
 
     public long getTime() {
         return mCalendar.getTimeInMillis();
     }
+
 }

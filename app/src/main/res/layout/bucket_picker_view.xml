@@ -1,53 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="center"
-    android:orientation="horizontal"
-    android:paddingBottom="@dimen/bpv_vertical_padding"
-    android:paddingTop="@dimen/bpv_vertical_padding">
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:gravity="center"
+              android:orientation="horizontal"
+              android:paddingBottom="@dimen/bpv_vertical_padding"
+              android:paddingTop="@dimen/bpv_vertical_padding">
 
-
-    <TextView
-        android:id="@+id/tv_month"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
         android:background="@drawable/bg_picker"
-        android:drawableBottom="@drawable/down_normal"
-        android:drawablePadding="@dimen/tv_month_drawable_padding"
-        android:drawableTop="@drawable/up_normal"
-        android:gravity="center"
-        android:singleLine="true"
-        android:textColor="@color/purple"
-        android:textSize="@dimen/tv_month_font_size" />
+        android:orientation="vertical">
+
+        <ImageButton
+            android:id="@+id/ib_increment_month"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/purple_box_up"
+            android:src="@drawable/ic_menu_up_transparent"/>
+
+        <TextView
+            android:id="@+id/tv_month"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="@dimen/tv_month_padding"
+            android:singleLine="true"
+            android:textColor="@color/purple"
+            android:textSize="@dimen/tv_month_font_size"/>
+
+        <ImageButton
+            android:id="@+id/ib_decrement_month"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/purple_box_down"
+            android:src="@drawable/ic_menu_down_transparent"/>
+    </LinearLayout>
 
 
-    <TextView
-        android:id="@+id/tv_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
         android:layout_marginLeft="@dimen/tv_date_horizontal_margin"
         android:layout_marginRight="@dimen/tv_date_horizontal_margin"
+        android:layout_weight="1"
         android:background="@drawable/bg_picker"
-        android:drawableBottom="@drawable/down_normal"
-        android:drawablePadding="@dimen/tv_date_drawable_padding"
-        android:drawableTop="@drawable/up_normal"
-        android:gravity="center"
-        android:singleLine="true"
-        android:textColor="@color/purple"
-        android:textSize="@dimen/tv_date_font_size" />
+        android:orientation="vertical">
+
+        <ImageButton
+            android:id="@+id/ib_increment_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/purple_box_up"
+            android:src="@drawable/ic_menu_up_transparent"/>
+
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:gravity="center"
+            android:padding="@dimen/tv_month_padding"
+            android:singleLine="true"
+            android:textColor="@color/purple"
+            android:textSize="@dimen/tv_date_font_size"/>
+
+        <ImageButton
+            android:id="@+id/ib_decrement_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/purple_box_down"
+            android:src="@drawable/ic_menu_down_transparent"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/bg_picker"
+        android:orientation="vertical">
+
+        <ImageButton
+            android:id="@+id/ib_increment_year"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/purple_box_up"
+            android:src="@drawable/ic_menu_up_transparent"/>
+
+        <TextView
+            android:id="@+id/tv_year"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="@dimen/tv_month_padding"
+            android:singleLine="true"
+            android:textColor="@color/purple"
+            android:textSize="@dimen/tv_year_font_size"/>
+
+        <ImageButton
+            android:id="@+id/ib_decrement_year"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/purple_box_down"
+            android:src="@drawable/ic_menu_down_transparent"/>
+    </LinearLayout>
 
 
-    <TextView
-        android:id="@+id/tv_year"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_picker"
-        android:drawableBottom="@drawable/down_normal"
-        android:drawablePadding="@dimen/tv_year_drawable_padding"
-        android:drawableTop="@drawable/up_normal"
-        android:gravity="center"
-        android:singleLine="true"
-        android:textColor="@color/purple"
-        android:textSize="@dimen/tv_year_font_size" />
 </LinearLayout>
