@@ -58,9 +58,9 @@ public class Util {
     public static Drawable getDrawable(Context context, int resourceId) {
         Drawable drawable;
         if (isLollipopOrMore()) {
-            drawable = context.getResources().getDrawable(resourceId);
-        } else {
             drawable = context.getDrawable(resourceId);
+        } else {
+            drawable = context.getResources().getDrawable(resourceId);
         }
         return drawable;
     }

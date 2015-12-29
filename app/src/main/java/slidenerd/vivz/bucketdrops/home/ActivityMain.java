@@ -113,7 +113,6 @@ public class ActivityMain extends AppCompatActivity {
 
         //Add a divider to our RecyclerView
         mRecycler.addItemDecoration(new Divider(this, LinearLayoutManager.VERTICAL));
-        mRecycler.setLayoutManager(new LinearLayoutManager(this));
         mRecycler.setItemAnimator(new DefaultItemAnimator());
         mBtnAdd = (Button) findViewById(R.id.btn_add);
 
