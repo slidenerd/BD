@@ -104,12 +104,8 @@ public class ActivityMain extends AppCompatActivity {
     private void initRecycler() {
         mRecycler = (BucketRecyclerView) findViewById(R.id.rv_drops);
         mEmptyView = findViewById(R.id.empty_drops);
-        //Set an Empty View to be displayed when the RecyclerView has no items
-        mRecycler.setEmptyView(mEmptyView);
-
-        //hide the toolbar when the bucket is empty and show it when it has atleast one row_drop in it
-        mRecycler.setToolbar(mToolbar);
-
+        mRecycler.setViewsToHideWhenEmpty(mToolbar);
+        mRecycler.setViewsToShowWhenEmpty(mEmptyView);
 
         //Add a divider to our RecyclerView
         mRecycler.addItemDecoration(new Divider(this, LinearLayoutManager.VERTICAL));

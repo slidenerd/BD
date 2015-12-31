@@ -2,17 +2,22 @@ package slidenerd.vivz.bucketdrops.widgets;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import slidenerd.vivz.bucketdrops.extras.Util;
 
 
 public class BucketRecyclerView extends RecyclerView {
     /**
      * The View to display when the RecyclerView has no items at all
      */
-    private View mEmptyView;
-    private Toolbar mToolbar;
+    private List<View> mNonEmptyViews = Collections.emptyList();
+    private List<View> mEmptyViews = Collections.emptyList();
     private AdapterDataObserver mObserver = new AdapterDataObserver() {
 
         /**
@@ -20,22 +25,22 @@ public class BucketRecyclerView extends RecyclerView {
          */
         @Override
         public void onChanged() {
-            checkIfEmpty();
+            hideIfEmpty();
         }
 
         @Override
         public void onItemRangeChanged(int positionStart, int itemCount) {
-            checkIfEmpty();
+            hideIfEmpty();
         }
 
         @Override
         public void onItemRangeInserted(int positionStart, int itemCount) {
-            checkIfEmpty();
+            hideIfEmpty();
         }
 
         @Override
         public void onItemRangeRemoved(int positionStart, int itemCount) {
-            checkIfEmpty();
+            hideIfEmpty();
         }
     };
 
@@ -51,21 +56,22 @@ public class BucketRecyclerView extends RecyclerView {
         super(context, attrs, defStyle);
     }
 
-    private void checkIfEmpty() {
-        if (getAdapter() != null && mEmptyView != null && mToolbar != null) {
+    private void hideIfEmpty() {
+        if (getAdapter() != null && !mNonEmptyViews.isEmpty() && !mEmptyViews.isEmpty()) {
             if (getAdapter().getItemCount() == 0) {
-                mEmptyView.setVisibility(View.VISIBLE);
+                Util.showViews(mEmptyViews);
                 BucketRecyclerView.this.setVisibility(View.GONE);
-                mToolbar.setVisibility(View.GONE);
+                Util.hideViews(mNonEmptyViews);
 
 
             } else {
-                mEmptyView.setVisibility(View.GONE);
+                Util.hideViews(mEmptyViews);
                 BucketRecyclerView.this.setVisibility(View.VISIBLE);
-                mToolbar.setVisibility(View.VISIBLE);
+                Util.showViews(mNonEmptyViews);
             }
         }
     }
+
 
     @Override
     public void setAdapter(Adapter adapter) {
@@ -77,11 +83,12 @@ public class BucketRecyclerView extends RecyclerView {
         mObserver.onChanged();
     }
 
-    public void setEmptyView(View emptyView) {
-        this.mEmptyView = emptyView;
+    public void setViewsToHideWhenEmpty(View... views) {
+        mNonEmptyViews = Arrays.asList(views);
     }
 
-    public void setToolbar(Toolbar mToolbar) {
-        this.mToolbar = mToolbar;
+    public void setViewsToShowWhenEmpty(View... views) {
+        mEmptyViews = Arrays.asList(views);
     }
+
 }

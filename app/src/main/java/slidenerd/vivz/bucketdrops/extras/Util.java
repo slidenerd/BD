@@ -11,7 +11,9 @@ import android.view.View;
 import android.widget.ImageView;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import slidenerd.vivz.bucketdrops.services.NotificationService;
 
@@ -77,5 +79,17 @@ public class Util {
     public static void setImageDrawable(ImageView imageView, int resourceId) {
         Drawable drawable = getDrawable(imageView.getContext(), resourceId);
         imageView.setImageDrawable(drawable);
+    }
+
+    public static void showViews(List<View> views) {
+        for (View view : views) {
+            view.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public static void hideViews(List<View> views) {
+        for (View view : views) {
+            view.setVisibility(View.GONE);
+        }
     }
 }
